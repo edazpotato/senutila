@@ -8,7 +8,38 @@ Better than Discord.JS
 // index.ts
 import { Bot } from "senutila";
 const bot = Bot({
-	database: {},
+	database: {
+		guild: {
+			table: "guilds",
+			idColumn: "id",
+		},
+		users: { table: "users", idColumn: "id" },
+		getValue: async (table: string, id: string, column: string) => {
+			const res = await myDatabaseDriver.executeSQL(
+				"sql stuff goes here"
+			);
+			if (!res.error) {
+				return res.data;
+			} else {
+				return false;
+			}
+		},
+		setValue: async (
+			table: string,
+			id: string,
+			column: string,
+			value: string
+		) => {
+			const res = await myDatabaseDriver.executeSQL(
+				"sql stuff goes here"
+			);
+			if (!res.error) {
+				return true;
+			} else {
+				return false;
+			}
+		},
+	},
 	languages: {
 		default: "en-GB", // If a key isn't found in the currently selected language, the bot will fall back to this one. It's also the one enabled by defualt.
 		directory: "./languages",
@@ -77,7 +108,7 @@ export default Command(
 			},
 		],
 	},
-	(event, args, bot) => {
+	async (event, args, bot) => {
 		if (args.ip) {
 			const res = someNetworkingLibrary.pingIpAddress(args.ip);
 			return event.reply(
@@ -99,12 +130,12 @@ export default Command(
 
 // listeners/ready.ts (bot event)
 import { Event } from "senutila";
-export default Event((event, bot) => {
+export default Event(async (event, bot) => {
 	bot.logger.success("Successfully connected to Discord.");
 });
 // listeners/MESSAGE_CREATE.ts
 import { Event } from "senutila";
-export default Event((event, bot) => {
+export default Event(async (event, bot) => {
 	bot.logger.info(
 		`Message received from ${event.data.author.username}#${event.data.author.discriminator}: ${event.data.content}`
 	);
