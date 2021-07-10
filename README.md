@@ -6,8 +6,8 @@ Better than Discord.JS
 
 ```bash
 # With Node.JS 14+ installed...
-npm i -g pnpm
+npm i -g pnpm # You need to use pnpm because otherwise the lockfiles will mess up
 pnpm install
 pnpm run build # Build once
-pnpm run dev # Will automaticaly rebuild when file changes ar4 detected
+pnpm run dev # Will automaticaly rebuild when file changes are detected
 ```
