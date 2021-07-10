@@ -1,0 +1,28 @@
+{
+	"name": "senutila",
+	"version": "0.0.1",
+	"description": "Better than Discord.JS",
+	"main": "./dist/index.js",
+	"scripts": {
+		"build": "tsc",
+		"dev": "tsc -w"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/edazpotato/senutila.git"
+	},
+	"keywords": [
+		"discord",
+		"bot"
+	],
+	"author": "https://github.com/edazpotato",
+	"license": "MIT",
+	"bugs": {
+		"url": "https://github.com/edazpotato/senutila/issues"
+	},
+	"homepage": "https://github.com/edazpotato/senutila#readme",
+	"dependencies": {
+		"typescript": "^4.3.5",
+		"ws": "^7.5.2"
+	}
+}
