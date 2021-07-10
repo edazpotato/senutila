@@ -1,14 +1,30 @@
 lockfileVersion: 5.3
 
 specifiers:
+  bufferutil: ^4.0.3
   typescript: ^4.3.5
+  utf-8-validate: ^5.0.5
   ws: ^7.5.2
 
 dependencies:
+  bufferutil: 4.0.3
   typescript: 4.3.5
-  ws: 7.5.2
+  utf-8-validate: 5.0.5
+  ws: 7.5.2_72ef9f06cb99540da679cbf1bf7a3256
 
 packages:
+
+  /bufferutil/4.0.3:
+    resolution: {integrity: sha512-yEYTwGndELGvfXsImMBLop58eaGW+YdONi1fNjTINSY98tmMmFijBG6WXgdkfuLNt4imzQNtIE+eBp1PVpMCSw==}
+    requiresBuild: true
+    dependencies:
+      node-gyp-build: 4.2.3
+    dev: false
+
+  /node-gyp-build/4.2.3:
+    resolution: {integrity: sha512-MN6ZpzmfNCRM+3t57PTJHgHyw/h4OWnZ6mR8P5j/uZtqQr46RRuDE/P+g3n0YR/AiYXeWixZZzaip77gdICfRg==}
+    hasBin: true
+    dev: false
 
   /typescript/4.3.5:
     resolution: {integrity: sha512-DqQgihaQ9cUrskJo9kIyW/+g0Vxsk8cDtZ52a3NGh0YNTfpUSArXSohyUGnvbPazEPLu398C0UxmKSOrPumUzA==}
@@ -16,7 +32,14 @@ packages:
     hasBin: true
     dev: false
 
-  /ws/7.5.2:
+  /utf-8-validate/5.0.5:
+    resolution: {integrity: sha512-+pnxRYsS/axEpkrrEpzYfNZGXp0IjC/9RIxwM5gntY4Koi8SHmUGSfxfWqxZdRxrtaoVstuOzUp/rbs3JSPELQ==}
+    requiresBuild: true
+    dependencies:
+      node-gyp-build: 4.2.3
+    dev: false
+
+  /ws/7.5.2_72ef9f06cb99540da679cbf1bf7a3256:
     resolution: {integrity: sha512-lkF7AWRicoB9mAgjeKbGqVUekLnSNO4VjKVnuPHpQeOxZOErX6BPXwJk70nFslRCEEA8EVW7ZjKwXaP9N+1sKQ==}
     engines: {node: '>=8.3.0'}
     peerDependencies:
@@ -27,4 +50,7 @@ packages:
         optional: true
       utf-8-validate:
         optional: true
+    dependencies:
+      bufferutil: 4.0.3
+      utf-8-validate: 5.0.5
     dev: false
