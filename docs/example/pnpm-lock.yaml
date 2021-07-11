@@ -1,13 +1,13 @@
 lockfileVersion: 5.3
 
 specifiers:
-  senutila: 0.0.6
+  senutila: 0.0.7
   sqlite: ^4.0.23
   sqlite3: ^5.0.2
   typescript: ^4.3.5
 
 dependencies:
-  senutila: 0.0.6
+  senutila: 0.0.7
   sqlite: 4.0.23
   sqlite3: 5.0.2
   typescript: 4.3.5
@@ -735,8 +735,8 @@ packages:
     hasBin: true
     dev: false
 
-  /senutila/0.0.6:
-    resolution: {integrity: sha512-sOtKswJkg1ihOfrNPLAnHCz9WunvoBfbZrEn5t88T7yUTD0FZvWnpeG5ZdJvHSzPsqiZStFBP55x/NZs0nRFZw==}
+  /senutila/0.0.7:
+    resolution: {integrity: sha512-/6fEvcBx1n/Ot9Z7fvHvInxeEk5BgrcwjWUx/aBvlo5u9BPXIls9WxNDacu8UpybJQJb98Kp6jCiqU5mfcsIWQ==}
     dependencies:
       bufferutil: 4.0.3
       chalk: 4.1.1
