@@ -26,6 +26,7 @@ export default class ModuleHandler {
 		try {
 			const module = (await import(modulePath)) as BaseModule;
 			id = module.id;
+			module.load(this.bot);
 			this.modules.set(id, module);
 			return true;
 		} catch {

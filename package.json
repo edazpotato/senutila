@@ -1,6 +1,6 @@
 {
 	"name": "senutila",
-	"version": "0.0.6",
+	"version": "0.0.7",
 	"description": "A Discord bot framework that's focused on making the developer experience great. Also better than Discord.JS",
 	"main": "lib/index.js",
 	"files": [
