@@ -9,6 +9,7 @@ package-lock.json
 yarn.lock
 # Built files
 lib/
+docs/*.js
 
 # Logs
 logs
