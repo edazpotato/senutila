@@ -121,7 +121,7 @@ pnpx tsc
 and then run it
 
 ```bash
-node dist/index.ts
+node index.js
 ```
 
 🎉 You just made a bot, with built-in localisation support, and slash commands.

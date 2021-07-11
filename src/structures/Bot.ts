@@ -48,7 +48,7 @@ export default class Bot {
 
 	constructor(options: BotOptions) {
 		this.database = options.database;
-		this.logger = Logger;
+		this.logger = new Logger();
 
 		this.languageHandler = new LanguageHandler(this, options.languages);
 		this.commandHandler = new CommandHandler(this, options.commands);

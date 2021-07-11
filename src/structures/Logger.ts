@@ -1,10 +1,10 @@
 import chalk from "chalk";
 
 export default class Logger {
-	static log(msg: string): void {
-		Logger.debug(msg);
+	log(msg: string): void {
+		this.debug(msg);
 	}
-	static debug(msg: string): void {
+	debug(msg: string): void {
 		console.info(
 			`[${chalk.bgMagenta(new Date().toLocaleString())}] ${chalk.bgWhite(
 				"DEBUG"
@@ -12,7 +12,7 @@ export default class Logger {
 		);
 	}
 
-	static info(msg: string): void {
+	info(msg: string): void {
 		console.info(
 			`[${chalk.bgMagenta(new Date().toLocaleString())}] ${chalk.bgCyan(
 				"INFO"
@@ -20,7 +20,7 @@ export default class Logger {
 		);
 	}
 
-	static success(msg: string): void {
+	success(msg: string): void {
 		console.info(
 			`[${chalk.bgMagenta(new Date().toLocaleString())}] ${chalk.bgGreen(
 				"SUCCESS"
@@ -28,7 +28,7 @@ export default class Logger {
 		);
 	}
 
-	static warning(msg: string): void {
+	warning(msg: string): void {
 		console.warn(
 			`[${chalk.bgMagenta(new Date().toLocaleString())}] ${chalk.bgYellow(
 				"WARN"
@@ -36,7 +36,7 @@ export default class Logger {
 		);
 	}
 
-	static error(msg: string): void {
+	error(msg: string): void {
 		console.warn(
 			`[${chalk.bgMagenta(new Date().toLocaleString())}] ${chalk.bgRed(
 				"ERR"
