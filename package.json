@@ -2,10 +2,15 @@
 	"name": "senutila",
 	"version": "0.0.1",
 	"description": "Better than Discord.JS",
-	"main": "./dist/index.js",
+	"main": "lib/index.js",
+	"module": "lib/index.esm.js",
+	"files": [
+		"lib",
+		"package.json"
+	],
 	"scripts": {
 		"build": "tsc",
-		"dev": "tsc -w"
+		"dev": "tsc --watch --incremental"
 	},
 	"repository": {
 		"type": "git",
@@ -23,11 +28,13 @@
 	"homepage": "https://github.com/edazpotato/senutila#readme",
 	"dependencies": {
 		"bufferutil": "^4.0.3",
-		"typescript": "^4.3.5",
+		"erlpack": "github:discord/erlpack",
 		"utf-8-validate": "^5.0.5",
-		"ws": "^7.5.2"
+		"ws": "^7.5.2",
+		"zlib-sync": "^0.1.7"
 	},
 	"devDependencies": {
-		"@types/node": "^16.3.1"
+		"@types/node": "^16.3.1",
+		"typescript": "^4.3.5"
 	}
 }

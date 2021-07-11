@@ -1,5 +1,4 @@
-import WebSocket from "ws";
-
-export default function (name: string = "world") {
-	console.log(`Hello, ${name}!`);
-}
+export * from "./structures/index";
+export * from "./types/index";
+export * from "./modules/index";
+export * from "./handlers/index";

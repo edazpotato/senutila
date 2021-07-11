@@ -7,14 +7,16 @@ Better than Discord.JS
 ```ts
 // index.ts
 import { Bot } from "senutila";
-const bot = Bot({
+const bot = new Bot({
 	database: {
 		guild: {
 			table: "guilds",
 			idColumn: "id",
+			languageColumn: "lang",
+			prefixColumn: "prefix", // Only set if you want to support custom per-guild prefixes. If a guild sets a custom prefix, the one set above will be disabled in that guild.
 		},
-		users: { table: "users", idColumn: "id" },
-		getValue: async (table: string, id: string, column: string) => {
+		users: { table: "users", idColumn: "id", languageColumn: "language" },
+		getValue: async (table, id, column) => {
 			const res = await myDatabaseDriver.executeSQL(
 				"sql stuff goes here"
 			);
@@ -24,12 +26,7 @@ const bot = Bot({
 				return false;
 			}
 		},
-		setValue: async (
-			table: string,
-			id: string,
-			column: string,
-			value: string
-		) => {
+		setValue: async (table, id, column, value) => {
 			const res = await myDatabaseDriver.executeSQL(
 				"sql stuff goes here"
 			);
@@ -43,16 +40,10 @@ const bot = Bot({
 	languages: {
 		default: "en-GB", // If a key isn't found in the currently selected language, the bot will fall back to this one. It's also the one enabled by defualt.
 		directory: "./languages",
-		guildLanguageColumnName: "lang",
-		userLanguageColumnName: "language",
 	},
 	commands: {
 		directory: "./commands",
-		text: {
-			// Only set this property if you ant to enable non-slash commands.
-			prefix: "!", // @BotName <command> will also work
-			guildPrefixColumnName: "prefix", // Only set if you want to support custom per-guild prefixes. If a guild sets a custom prefix, the one set above will be disabled in that guild.
-		},
+		textPrefix: "!", // @BotName <command> will also work
 	},
 	events: {
 		directory: "./listeners", // Discord events should be all caps, custom bot events will be camelCase.
@@ -63,7 +54,7 @@ bot.start("token"); // Will use sharding automatically if necessary for the numb
 
 // languages/en-GB.ts
 import { Language } from "senutila";
-export default Language((bot) => ({
+export default new Language("en-GB", (bot) => ({
 	MY_LANGUAGE_KEYS: "Go in here",
 	COMPUTED_STRING: (whatever: string, props: number) =>
 		`${whatever} ${props} you want`,
@@ -91,7 +82,8 @@ export default Language((bot) => ({
 
 // commands/ping.ts
 import { Command } from "senutila";
-export default Command(
+export default new Command(
+	"ping",
 	{
 		description: "PING_COMMAND_DESCRIPTION", // Language key. Default language is used for slash commands
 		aliases: ["pinnggg"], // Array of aliases, or a function that returns an array of aliases. Only used when invoked as a non-slash command
@@ -130,12 +122,12 @@ export default Command(
 
 // listeners/ready.ts (bot event)
 import { Event } from "senutila";
-export default Event(async (event, bot) => {
+export default new Event("ready", async (event, bot) => {
 	bot.logger.success("Successfully connected to Discord.");
 });
 // listeners/MESSAGE_CREATE.ts
 import { Event } from "senutila";
-export default Event(async (event, bot) => {
+export default new Event("MESSAGE_CREATE", async (event, bot) => {
 	bot.logger.info(
 		`Message received from ${event.data.author.username}#${event.data.author.discriminator}: ${event.data.content}`
 	);

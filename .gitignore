@@ -7,6 +7,8 @@
 # We're using pnpm, so pnpm-lock.yaml is the canonical lockfile
 package-lock.json
 yarn.lock
+# Built files
+lib/
 
 # Logs
 logs
