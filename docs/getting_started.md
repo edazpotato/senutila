@@ -125,3 +125,4 @@ node index.js
 ```
 
 🎉 You just made a bot, with built-in localisation support, and slash commands.
+You can see the result of this tutorial in the [example](example/) folder.
