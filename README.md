@@ -1,12 +1,16 @@
-# senutila
-
-> # THIS IS STILL BEING DEVELOPED DON'T USE IT WHY ARE PEOPLE DOWNLOADING THIS AAAAAAAAAAAAAAAAAAAAAAAAAHHHHHHHHHH
+# Senutila
 
 A Discord bot framework that's focused on making the developer experience great. Also better than Discord.JS.
 
+
+> # THIS IS STILL BEING DEVELOPED DON'T USE IT WHY ARE PEOPLE DOWNLOADING THIS AAAAAAAAAAAAAAAAAAAAAAAAAHHHHHHHHHH
+
+
 ## Example usage
 
-```ts
+See [docs/getting_started.md].
+
+<!-- ```ts
 // index.ts
 import { Bot } from "senutila";
 const bot = new Bot({
@@ -134,7 +138,7 @@ export default new Event("MESSAGE_CREATE", async (event, bot) => {
 		`Message received from ${event.data.author.username}#${event.data.author.discriminator}: ${event.data.content}`
 	);
 });
-```
+``` -->
 
 ## Developing the library
 

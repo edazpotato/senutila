@@ -1,6 +1,6 @@
 {
 	"name": "senutila",
-	"version": "0.0.3",
+	"version": "0.0.4",
 	"description": "A Discord bot framework that's focused on making the developer experience great. Also better than Discord.JS",
 	"main": "lib/index.js",
 	"files": [
@@ -27,6 +27,7 @@
 	"homepage": "https://github.com/edazpotato/senutila#readme",
 	"dependencies": {
 		"bufferutil": "^4.0.3",
+		"chalk": "^4.1.1",
 		"erlpack": "github:discord/erlpack",
 		"utf-8-validate": "^5.0.5",
 		"ws": "^7.5.2",

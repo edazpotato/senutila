@@ -1,7 +1,12 @@
-import { BaseModule } from "../structures/index";
+import { BaseModule, Bot } from "../structures/index";
 
-export default class Event extends BaseModule {
-	constructor(id: string) {
+type ListenerExecutor = (event: any, bot: Bot) => Promise<any>;
+
+export default class Listener extends BaseModule {
+	executer: ListenerExecutor;
+
+	constructor(id: string, executer: ListenerExecutor) {
 		super(id);
+		this.executer = executer;
 	}
 }

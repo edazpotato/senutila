@@ -7,6 +7,8 @@ import {
 	ListenerHandlerOptions,
 } from "../handlers/index";
 
+import Logger from "./Logger";
+
 interface BotDatabaseTableOptions {
 	table: string;
 	idColumn: string;
@@ -42,12 +44,18 @@ export default class Bot {
 	commandHandler: CommandHandler;
 	listenerHandler: ListenerHandler;
 	database: BotDatabase;
+	logger: Logger;
 
 	constructor(options: BotOptions) {
 		this.database = options.database;
+		this.logger = Logger;
 
 		this.languageHandler = new LanguageHandler(this, options.languages);
 		this.commandHandler = new CommandHandler(this, options.commands);
 		this.listenerHandler = new ListenerHandler(this, options.listeners);
+	}
+
+	start(token: string) {
+		token;
 	}
 }
