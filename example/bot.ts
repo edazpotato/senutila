@@ -7,6 +7,7 @@ import {
 	language,
 	selectMenu,
 } from "../src";
+// In an actual app you would do 'import { whatever } from "senutila"', but this is just to make handling dependencies easier on my end
 
 const myCoolBot = bot("my token", {});
 
