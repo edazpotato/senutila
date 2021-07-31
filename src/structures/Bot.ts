@@ -1,61 +1,105 @@
-import {
-	CommandHandler,
-	CommandHandlerOptions,
-	LanguageHandler,
-	LanguageHandlerOptions,
-	ListenerHandler,
-	ListenerHandlerOptions,
-} from "../handlers/index";
+import { Category, Command, Language } from "./index";
 
-import Logger from "./Logger";
+import { LanguageID } from "../typings/index";
 
-interface BotDatabaseTableOptions {
-	table: string;
-	idColumn: string;
-	languageColumn: string;
-}
+interface BotOptions {}
 
-interface BotDatabase {
-	guild: BotDatabaseTableOptions & { prefixColumn?: string };
-	user: BotDatabaseTableOptions;
-	getValue: (
-		table: string,
-		id: string,
-		column: string
-	) => Promise<string | false>;
-	setValue: (
-		table: string,
-		id: string,
-		column: string,
-		value: string
-	) => Promise<boolean>;
-}
+export class Bot {
+	private __top_secret_TOKEN_dont_expose_this_please: string;
 
-interface BotOptions {
-	database: BotDatabase;
-	languages: LanguageHandlerOptions;
-	commands: CommandHandlerOptions;
-	listeners: ListenerHandlerOptions;
-}
+	private _languages: Map<LanguageID, Language> = new Map();
+	private _defaultLanguage?: LanguageID;
+	private _categories: Map<string, Category> = new Map();
 
-/* Bot is the only one that doesn't extend BaseStructure becuase it loads all the other structures */
-export default class Bot {
-	languageHandler: LanguageHandler;
-	commandHandler: CommandHandler;
-	listenerHandler: ListenerHandler;
-	database: BotDatabase;
-	logger: Logger;
+	constructor(token: string, options: BotOptions) {
+		this.__top_secret_TOKEN_dont_expose_this_please = token;
 
-	constructor(options: BotOptions) {
-		this.database = options.database;
-		this.logger = new Logger();
-
-		this.languageHandler = new LanguageHandler(this, options.languages);
-		this.commandHandler = new CommandHandler(this, options.commands);
-		this.listenerHandler = new ListenerHandler(this, options.listeners);
+		// Category for commands that aren't in any other ones
+		this._categories.set(
+			"__senutila_default_other",
+			new Category(
+				"__senutila_default_other",
+				"__SENUTILA_DEFAULT_CATEGORY_OTHER",
+				[]
+			)
+		);
 	}
 
-	start(token: string) {
-		token;
+	checkThatEverythingHasBeenSetProperly(): true | Error {
+		// Check languages
+		if (this._languages.size < 1) {
+			throw new Error("No languages have been registered yet.");
+		}
+		if (!this._defaultLanguage) {
+			throw new Error("You need to set a defualt language.");
+		}
+
+		return true;
 	}
+
+	setDefaultLanguage(language: LanguageID): true | Error {
+		if (this._languages.has(language)) {
+			this._defaultLanguage = language;
+			return true;
+		}
+		throw new Error(
+			"You have to register the language before you can set it as the defualt."
+		);
+	}
+
+	registerLanguages(languages: Language[]): true | Error {
+		// Add languages to map
+		for (const language of languages) {
+			if (this._languages.has(language.id))
+				throw new Error(
+					`Multiple languages with the same ID: ${language.id}`
+				);
+			language.load(this);
+			this._languages.set(language.id, language);
+		}
+		return true;
+	}
+
+	registerCommands(thingsToRegister: (Category | Command)[]): true | Error {
+		this.checkThatEverythingHasBeenSetProperly();
+
+		for (const thing of thingsToRegister) {
+			if (thing instanceof Command) {
+				// Default category
+				const category = this._categories.get(
+					"__senutila_default_other"
+				);
+				// Stop people from being stupid
+				if (!category)
+					throw new Error(
+						"If you remove the defualt category, you'll need to put all your commands inside your own categories."
+					);
+				// If you want to update a command, then you need to update it with the update method
+				if (category.commands.has(thing.id))
+					throw new Error(
+						`Multiple commands with the same ID: ${thing.id} in the default category.`
+					);
+				thing.load(this);
+				category.commands.set(thing.id, thing);
+			} else {
+				if (this._categories.has(thing.id))
+					throw new Error(
+						`Multiple categories with the same ID: ${thing.id}.`
+					);
+				thing.load(this);
+				this._categories.set(thing.id, thing);
+			}
+		}
+		return true;
+	}
+
+	start(): void {}
+
+	get categories() {
+		return this._categories;
+	}
+}
+
+export function bot(...args: ConstructorParameters<typeof Bot>): Bot {
+	return new Bot(...args);
 }

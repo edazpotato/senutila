@@ -4,7 +4,9 @@ specifiers:
   '@types/node': ^16.3.1
   bufferutil: ^4.0.3
   chalk: ^4.1.1
+  discord-api-types: ^0.20.2
   erlpack: github:discord/erlpack
+  tweetnacl: ^1.0.3
   typescript: ^4.3.5
   utf-8-validate: ^5.0.5
   ws: ^7.5.2
@@ -13,7 +15,9 @@ specifiers:
 dependencies:
   bufferutil: 4.0.3
   chalk: 4.1.1
+  discord-api-types: 0.20.2
   erlpack: github.com/discord/erlpack/e27db8f82892bdb9b28a0547cc394d68b5d2242d
+  tweetnacl: 1.0.3
   utf-8-validate: 5.0.5
   ws: 7.5.2_72ef9f06cb99540da679cbf1bf7a3256
   zlib-sync: 0.1.7
@@ -67,6 +71,11 @@ packages:
     resolution: {integrity: sha512-dOy+3AuW3a2wNbZHIuMZpTcgjGuLU/uBL/ubcZF9OXbDo8ff4O8yVp5Bf0efS8uEoYo5q4Fx7dY9OgQGXgAsQA==}
     dev: false
 
+  /discord-api-types/0.20.2:
+    resolution: {integrity: sha512-DxjFGuiJ4q5oozYcw/KqAC9dUdGu5f8JIYee073/RMkXSKTYtx2Y7n7ha9FQO7alDfVUxElzdTuWt5ByzB+QKQ==}
+    engines: {node: '>=12'}
+    dev: false
+
   /file-uri-to-path/1.0.0:
     resolution: {integrity: sha512-0Zt+s3L7Vf1biwWZ29aARiVYLx7iMGnEUl9x33fbB/j3jR81u/O2LbqK+Bm1CDSNDKVtJ/YjwY7TUd5SkeLQLw==}
     dev: false
@@ -90,6 +99,10 @@ packages:
     engines: {node: '>=8'}
     dependencies:
       has-flag: 4.0.0
+    dev: false
+
+  /tweetnacl/1.0.3:
+    resolution: {integrity: sha512-6rt+RN7aOi1nGMyC4Xa5DdYiukl2UWCbcJft7YhxReBGQD7OAM8Pbxw6YMo4r2diNEA8FEmu32YOn9rhaiE5yw==}
     dev: false
 
   /typescript/4.3.5:
