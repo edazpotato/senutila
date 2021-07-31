@@ -2,33 +2,10 @@
 
 A Discord bot framework that's focused on making the developer experience great. Also better than Discord.JS.
 
-## Example usage
+## Example
 
+See [example/bot.ts](https://github.com/edazpotato/senutila/blob/main/example/bot.ts) for example usage.
 
+## Other notes
 
-## Developing the library
-
-### Dependencies...
-
-...are handled with [pnpm](https://pnpm.io/), which is used the same way as normal npm (except with a p at the start of comamnds), it's just faster and more efficient with storage space.
-
-To install it, use `npm i -g pnpm` and then use npm commands as normal (with a prepended p)
-E.g.
-
-```bash
-pnpm install
-pnpm i -D @types/node
-pnpm un @types/node
-pnpm run start
-pnpm publish
-```
-
-### Scripts
-
-```bash
-# With Node.JS 14+ installed...
-npm i -g pnpm # You need to use pnpm because otherwise the lockfiles will mess up
-pnpm install
-pnpm run build # Build once
-pnpm run dev # Automaticaly rebuild when file changes are detected
-```
+Senutila uses [pnpm](https://pnpm.io/), for dependencies. Install it with `npm i -g pnpm`, and then use all npm commands like normal, except witha prepended p character.
