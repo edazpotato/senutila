@@ -24,8 +24,8 @@ export type ButtonStyle =
 	| "LINK";
 
 export type InteractionHandler = (
-	interaction: Interaction,
-	bot: Bot
+	bot: Bot,
+	interaction: Interaction
 ) => Promise<any>;
 
 export type TopLevelMessageComponent = Button | ComponentRow;

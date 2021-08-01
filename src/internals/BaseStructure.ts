@@ -3,16 +3,14 @@ import { Bot } from "../structures/index";
 export class BaseStructure {
 	protected _id: string;
 	private _bot?: Bot;
-	private _loaded: boolean = false;
 
 	constructor(id: string) {
 		this._id = id;
 	}
 
-	load(bot: Bot) {
+	load(bot: Bot): BaseStructure {
 		this._bot = bot;
-		this._loaded = true;
-		return this._loaded;
+		return this;
 	}
 
 	get id(): string {
@@ -21,9 +19,5 @@ export class BaseStructure {
 
 	get bot(): Bot | undefined {
 		return this._bot;
-	}
-
-	get loaded(): boolean {
-		return this._loaded;
 	}
 }

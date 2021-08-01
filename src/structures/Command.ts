@@ -1,4 +1,5 @@
-import { BaseStructure } from "../internals/index";
+import { BaseStructure, Interaction } from "../internals/index";
+
 import { InteractionHandler } from "../typings/index";
 
 const commandsNameRegExp = /^[\w-]{1,32}$/;
@@ -12,14 +13,23 @@ export class Command extends BaseStructure {
 		descriptionKey: string,
 		handler: InteractionHandler
 	) {
-		const commandName = id.toLowerCase();
-		if (!commandsNameRegExp.test(commandName))
+		const commandID = id.toLowerCase();
+		if (!commandsNameRegExp.test(commandID))
 			throw new Error(
-				`Command names must be between 1 and 32 characters is length (inclusive), and contain only letters, numbers, hyphens and underscores.`
+				`Command ids must be between 1 and 32 characters is length (inclusive), and contain only letters, numbers, hyphens and underscores.`
 			);
-		super(commandName);
+		super(commandID);
 		this._descriptionKey = descriptionKey;
 		this._handler = handler;
+	}
+
+	async handle(interaction: Interaction) {
+		if (!this.bot)
+			throw new Error(
+				`Tried to handle interaction before command was loaded. ID: ${this.id}`
+			);
+
+		return this._handler(this.bot, interaction);
 	}
 
 	get descriptionKey(): string {

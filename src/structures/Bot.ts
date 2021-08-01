@@ -1,8 +1,11 @@
 import { Category, Command, Language } from "./index";
 
 import { LanguageID } from "../typings/index";
+import WebSocket from "ws";
 
-interface BotOptions {}
+interface BotOptions {
+	token: string;
+}
 
 export class Bot {
 	private __top_secret_TOKEN_dont_expose_this_please: string;
@@ -11,8 +14,10 @@ export class Bot {
 	private _defaultLanguage?: LanguageID;
 	private _categories: Map<string, Category> = new Map();
 
-	constructor(token: string, options: BotOptions) {
-		this.__top_secret_TOKEN_dont_expose_this_please = token;
+	protected _ws?: WebSocket;
+
+	constructor(options: BotOptions) {
+		this.__top_secret_TOKEN_dont_expose_this_please = options.token;
 
 		// Category for commands that aren't in any other ones
 		this._categories.set(
@@ -25,7 +30,7 @@ export class Bot {
 		);
 	}
 
-	checkThatEverythingHasBeenSetProperly(): true | Error {
+	checkThatEverythingHasBeenSetProperly(): Bot {
 		// Check languages
 		if (this._languages.size < 1) {
 			throw new Error("No languages have been registered yet.");
@@ -34,20 +39,20 @@ export class Bot {
 			throw new Error("You need to set a defualt language.");
 		}
 
-		return true;
+		return this;
 	}
 
-	setDefaultLanguage(language: LanguageID): true | Error {
+	setDefaultLanguage(language: LanguageID): Bot {
 		if (this._languages.has(language)) {
 			this._defaultLanguage = language;
-			return true;
+			return this;
 		}
 		throw new Error(
 			"You have to register the language before you can set it as the defualt."
 		);
 	}
 
-	registerLanguages(languages: Language[]): true | Error {
+	registerLanguages(languages: Language[]): Bot {
 		// Add languages to map
 		for (const language of languages) {
 			if (this._languages.has(language.id))
@@ -57,10 +62,10 @@ export class Bot {
 			language.load(this);
 			this._languages.set(language.id, language);
 		}
-		return true;
+		return this;
 	}
 
-	registerCommands(thingsToRegister: (Category | Command)[]): true | Error {
+	registerCommands(thingsToRegister: (Category | Command)[]): Bot {
 		this.checkThatEverythingHasBeenSetProperly();
 
 		for (const thing of thingsToRegister) {
@@ -90,10 +95,12 @@ export class Bot {
 				this._categories.set(thing.id, thing);
 			}
 		}
-		return true;
+		return this;
 	}
 
-	start(): void {}
+	start(): Bot {
+		return this;
+	}
 
 	get categories() {
 		return this._categories;

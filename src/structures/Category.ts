@@ -20,11 +20,12 @@ export class Category extends BaseStructure {
 		}
 	}
 
-	load(bot: Bot): boolean {
+	load(bot: Bot): Category {
 		this._commands.forEach((command) => {
 			command.load(bot);
 		});
-		return super.load(bot);
+		super.load(bot);
+		return this;
 	}
 
 	get nameKey(): string {
