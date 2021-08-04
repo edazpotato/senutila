@@ -17,7 +17,7 @@ export class APIClient {
 	application = {
 		commands: {
 			async post() {
-				const request = this.authorisedRequest();
+				// const request = this.authorisedRequest();
 			},
 		},
 		guilds(guildID: Snowflake) {
