@@ -23,7 +23,7 @@ myCoolBot
 		}),
 	])
 	.setDefaultLanguage("en-GB")
-	.registerCommands([
+	.addCommands([
 		command("cmd_1", "COMMAND_1_DESCRIPTION", async (bot, interaction) =>
 			interaction.reply({
 				content: ["COMMAND_1_RESPONSE", Math.random() * 100],
@@ -51,7 +51,7 @@ myCoolBot
 									value: "2",
 								},
 							],
-							async (interaction) => {}
+							async (bot, interaction) => {}
 						),
 					]),
 					button(

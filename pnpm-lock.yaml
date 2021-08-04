@@ -1,9 +1,11 @@
 lockfileVersion: 5.3
 
 specifiers:
+  '@types/centra': ^2.2.0
   '@types/node': ^16.3.1
   '@types/ws': ^7.4.7
   bufferutil: ^4.0.3
+  centra: ^2.5.0
   chalk: ^4.1.1
   discord-api-types: ^0.20.2
   erlpack: github:discord/erlpack
@@ -15,6 +17,7 @@ specifiers:
 
 dependencies:
   bufferutil: 4.0.3
+  centra: 2.5.0
   chalk: 4.1.1
   discord-api-types: 0.20.2
   erlpack: github.com/discord/erlpack/e27db8f82892bdb9b28a0547cc394d68b5d2242d
@@ -24,11 +27,18 @@ dependencies:
   zlib-sync: 0.1.7
 
 devDependencies:
+  '@types/centra': 2.2.0
   '@types/node': 16.3.1
   '@types/ws': 7.4.7
   typescript: 4.3.5
 
 packages:
+
+  /@types/centra/2.2.0:
+    resolution: {integrity: sha512-TUpM1QoIgXa2VL1LnWbTgde39+rRnsOtvb0v8ZrX8t51g8K1Wwu4HAEXcBg5a56GV5Vm/KazyE5+g4AW8YbKNg==}
+    dependencies:
+      '@types/node': 16.4.9
+    dev: true
 
   /@types/node/16.3.1:
     resolution: {integrity: sha512-N87VuQi7HEeRJkhzovao/JviiqKjDKMVKxKMfUvSKw+MbkbW8R0nA3fi/MQhhlxV2fQ+2ReM+/Nt4efdrJx3zA==}
@@ -62,6 +72,10 @@ packages:
     requiresBuild: true
     dependencies:
       node-gyp-build: 4.2.3
+    dev: false
+
+  /centra/2.5.0:
+    resolution: {integrity: sha512-CnSF1HD8vOOgNbE4P2fZEhdhfAohvpcF3DSdSvEcSHDAZvr+Xfw73isT8SXJJc3VMBqSwjXhr29/ikHUgFcypg==}
     dev: false
 
   /chalk/4.1.1:

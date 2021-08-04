@@ -1,6 +1,6 @@
 import { Category, Command, Language } from "./index";
+import { LanguageID, Snowflake } from "../typings/index";
 
-import { LanguageID } from "../typings/index";
 import WebSocket from "ws";
 
 interface BotOptions {
@@ -65,7 +65,7 @@ export class Bot {
 		return this;
 	}
 
-	registerCommands(thingsToRegister: (Category | Command)[]): Bot {
+	addCommands(thingsToRegister: (Category | Command)[]): Bot {
 		this.checkThatEverythingHasBeenSetProperly();
 
 		for (const thing of thingsToRegister) {
@@ -97,6 +97,8 @@ export class Bot {
 		}
 		return this;
 	}
+
+	registerCommands(guildID?: Snowflake) {}
 
 	start(): Bot {
 		return this;
