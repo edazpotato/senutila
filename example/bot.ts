@@ -137,12 +137,7 @@ myCoolBot
 
 					bot.api
 						.delete(
-							`/channels/${event.channel_id}/messages/${event.message_id}/reactions/${encodedEmoji}/${event.user_id}`,
-							{
-								body: {
-									content: "General kenobi",
-								},
-							}
+							`/channels/${event.channel_id}/messages/${event.message_id}/reactions/${encodedEmoji}/${event.user_id}`
 						)
 						.catch((e) => {});
 				}
