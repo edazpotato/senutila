@@ -32,6 +32,7 @@
 	},
 	"homepage": "https://github.com/edazpotato/senutila#readme",
 	"dependencies": {
+		"@discordjs/rest": "^0.1.0-canary.0",
 		"@discordjs/collection": "^0.2.1",
 		"bufferutil": "^4.0.3",
 		"centra": "^2.5.0",
@@ -44,7 +45,6 @@
 		"zlib-sync": "^0.1.7"
 	},
 	"devDependencies": {
-		"@discordjs/rest": "^0.1.0-canary.0",
 		"@types/centra": "^2.2.0",
 		"@types/node": "^16.4.12",
 		"@types/ws": "^7.4.7",
