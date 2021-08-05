@@ -1,5 +1,6 @@
 import { Bot, Button, ComponentRow, SelectMenu } from "../structures/index";
 
+import Collection from "@discordjs/collection";
 import { Interaction } from "../internals/index";
 
 export type LanguageID = `${string}-${string}`;
@@ -12,7 +13,7 @@ export type LanguageDictionaryValue =
 export interface RawLanguageDictionary {
 	[key: string]: LanguageDictionaryValue;
 }
-export type LanguageDictionary = Map<string, LanguageDictionaryValue>;
+export type LanguageDictionary = Collection<string, LanguageDictionaryValue>;
 
 export type LanguageKey = string | [string, ...any];
 

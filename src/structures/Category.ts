@@ -1,16 +1,17 @@
 import { Bot, Command } from "./index";
 
 import { BaseStructure } from "../internals/index";
+import Collection from "@discordjs/collection";
 
 export class Category extends BaseStructure {
-	private _commands: Map<string, Command> = new Map();
+	private _commands: Collection<string, Command> = new Collection();
 	private _nameKey: string;
 
 	constructor(id: string, nameKey: string, commands: Command[]) {
 		super(id);
 		this._nameKey = nameKey;
 
-		// Add commands to map
+		// Add commands to Collection
 		for (let command of commands) {
 			if (this._commands.has(command.id))
 				throw new Error(

@@ -6,6 +6,7 @@ import {
 } from "../typings/index";
 
 import { BaseStructure } from "../internals/index";
+import Collection from "@discordjs/collection";
 
 export class Language extends BaseStructure {
 	declare _id: LanguageID;
@@ -20,10 +21,10 @@ export class Language extends BaseStructure {
 	) {
 		super(id);
 		this._description = description;
-		if (dictionary instanceof Map) {
+		if (dictionary instanceof Collection) {
 			this._dictionary = dictionary;
 		} else {
-			this._dictionary = new Map<string, LanguageDictionaryValue>(
+			this._dictionary = new Collection<string, LanguageDictionaryValue>(
 				Object.entries(dictionary)
 			);
 		}

@@ -1,6 +1,7 @@
 import { Category, Command, Language, RawEventListener } from "./index";
 import { LanguageID, Snowflake } from "../typings/index";
 
+import Collection from "@discordjs/collection";
 import { REST as DiscordRestAPIClient } from "@discordjs/rest";
 import { GatewayDispatchEvents } from "discord-api-types";
 import WebSocket from "ws";
@@ -12,11 +13,13 @@ interface BotOptions {
 export class Bot {
 	private __top_secret_TOKEN_dont_expose_this_please: string;
 
-	private _languages: Map<LanguageID, Language> = new Map();
+	private _languages: Collection<LanguageID, Language> = new Collection();
 	private _defaultLanguage?: LanguageID;
-	private _categories: Map<string, Category> = new Map();
-	private _rawEventListeners: Map<GatewayDispatchEvents, RawEventListener[]> =
-		new Map();
+	private _categories: Collection<string, Category> = new Collection();
+	private _rawEventListeners: Collection<
+		GatewayDispatchEvents,
+		RawEventListener[]
+	> = new Collection();
 
 	protected _ws?: WebSocket;
 
@@ -65,7 +68,7 @@ export class Bot {
 	}
 
 	registerLanguages(languages: Language[]): Bot {
-		// Add languages to map
+		// Add languages to Collection
 		for (const language of languages) {
 			if (this._languages.has(language.id))
 				throw new Error(
