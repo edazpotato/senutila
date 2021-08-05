@@ -20,7 +20,10 @@
 	},
 	"keywords": [
 		"discord",
-		"bot"
+		"bot",
+		"robotics",
+		"cli",
+		"backend"
 	],
 	"author": "https://github.com/edazpotato",
 	"license": "MIT",
