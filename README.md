@@ -8,4 +8,5 @@ See [example/bot.ts](https://github.com/edazpotato/senutila/blob/main/example/bo
 
 ## Other notes
 
-Senutila uses [pnpm](https://pnpm.io/), for dependencies. Install it with `npm i -g pnpm`, and then use all npm commands like normal, except witha prepended p character.
+-   Node.js version 16 or greater is required.
+-   Senutila uses [pnpm](https://pnpm.io/), for dependencies. Install it with `npm i -g pnpm`, and then use all npm commands like normal, except witha prepended p character.

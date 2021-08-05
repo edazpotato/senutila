@@ -8,9 +8,11 @@
 		"package.json"
 	],
 	"scripts": {
-		"build": "tsc",
+		"pre-build": "rimraf lib/*",
+		"build": "pnpm run pre-build&&tsc",
 		"dev": "tsc --watch --incremental",
-		"build-example": "tsc --project tsconfig.example.json"
+		"pre-build-example": "rimraf example/*.js",
+		"build-example": "pnpm run pre-build-example&&tsc --project tsconfig.example.json"
 	},
 	"repository": {
 		"type": "git",
@@ -40,8 +42,12 @@
 	"devDependencies": {
 		"@discordjs/rest": "^0.1.0-canary.0",
 		"@types/centra": "^2.2.0",
-		"@types/node": "^16.3.1",
+		"@types/node": "^16.4.12",
 		"@types/ws": "^7.4.7",
+		"rimraf": "^3.0.2",
 		"typescript": "^4.3.5"
+	},
+	"engines": {
+		"node": ">=16"
 	}
 }
