@@ -17,12 +17,13 @@ export type LanguageDictionary = Collection<string, LanguageDictionaryValue>;
 
 export type LanguageKey = string | [string, ...any];
 
-export type ButtonStyle =
-	| "PRIMARY"
-	| "SECONDARY"
-	| "SUCCESS"
-	| "DANGER"
-	| "LINK";
+export enum ButtonStyles {
+	Primary = 1,
+	Secondary = 2,
+	Success = 3,
+	Danger = 4,
+	Link = 5,
+}
 
 export type InteractionHandler = (
 	bot: Bot,
@@ -35,3 +36,13 @@ export type ComponentRowComponent = Button | SelectMenu;
 export type Snowflake = string;
 
 export type RawEventHandler = (bot: Bot, event: any) => Promise<any>;
+
+export type URL = `http${"s" | ""}://${string}${
+	| `.${string}${string}${"/" | `.${string}` | ""}`
+	| ""}`;
+
+export type EmojiPartial = {
+	name: string;
+	id: Snowflake;
+	animated?: boolean;
+};

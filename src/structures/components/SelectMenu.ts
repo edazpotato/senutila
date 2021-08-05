@@ -1,4 +1,5 @@
 import {
+	EmojiPartial,
 	InteractionHandler,
 	LanguageKey,
 	Snowflake,
@@ -10,10 +11,7 @@ interface SelectMenuOption {
 	label: LanguageKey;
 	value: string;
 	description: LanguageKey;
-	emoji?: {
-		name: string;
-		id: Snowflake;
-	};
+	emoji?: EmojiPartial;
 }
 
 type SelectMenuOptions = [
@@ -46,26 +44,56 @@ type SelectMenuOptions = [
 ];
 
 export class SelectMenu extends BaseComponent {
+	static ComponentType = 3;
+
 	private _options: SelectMenuOptions;
 	private _minOptions: number;
 	private _maxOptions: number;
 	private _placeholder: LanguageKey;
 
 	constructor(
-		placeholder: LanguageKey,
-		minOptions: number,
-		maxOptions: number,
-		options: SelectMenuOptions,
+		args: {
+			placeholder: LanguageKey;
+			minOptions: number;
+			maxOptions: number;
+			options: SelectMenuOptions;
+		},
 		handler: InteractionHandler
 	) {
 		super(handler);
-		this._placeholder = placeholder;
-		this._options = options;
-		this._minOptions = minOptions;
-		this._maxOptions = maxOptions;
+		this._placeholder = args.placeholder;
+		this._minOptions = args.minOptions;
+		this._maxOptions = args.maxOptions;
+		this._options = args.options;
 	}
 
-	get placeholder(): LanguageKey {
+	serialize() {
+		return {
+			type: SelectMenu.ComponentType,
+			custom_id: this._id,
+			placeholder: this._placeholder,
+			min_values: this._minOptions,
+			max_values: this._maxOptions,
+			options: this._options
+				.map((option) => {
+					if (!option) return null;
+					return {
+						label: option.label,
+						value: option.value,
+						description: option.description,
+						emoji: option.emoji
+							? {
+									name: option.emoji.name,
+									id: option.emoji.id,
+							  }
+							: undefined,
+					};
+				})
+				.filter((serializedOption) => !!serializedOption),
+		};
+	}
+
+	get placeholderKey(): LanguageKey {
 		return this._placeholder;
 	}
 

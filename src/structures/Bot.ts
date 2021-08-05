@@ -120,6 +120,7 @@ export class Bot {
 				...(this._rawEventListeners.get(listener.event) || []),
 			]);
 		}
+		console.log(this._rawEventListeners);
 		return this;
 	}
 

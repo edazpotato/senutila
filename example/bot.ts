@@ -1,8 +1,5 @@
 import {
-	GatewayDispatchEvents,
-	GatewayMessageCreateDispatchData,
-} from "discord-api-types";
-import {
+	ButtonStyles,
 	bot,
 	button,
 	category,
@@ -12,6 +9,11 @@ import {
 	rawEventListener,
 	selectMenu,
 } from "../lib";
+import {
+	GatewayDispatchEvents,
+	GatewayMessageCreateDispatchData,
+	GatewayMessageReactionAddDispatchData,
+} from "discord-api-types";
 
 /* In an actual app you would do 'import { whatever } from "senutila"', but this is just to make handling dependencies easier on my end */
 
@@ -35,33 +37,37 @@ myCoolBot
 				components: [
 					componentRow([
 						selectMenu(
-							"COMMAND_1_SELECT_1_PLACEHOLDER",
-							1,
-							1,
-							[
-								{
-									label: "COMMAND_1_SELECT_1_OPTION_1_LABEL",
-									description:
-										"COMMAND_1_SELECT_1_OPTION_1_DESCRIPTION",
-									value: "1",
-									emoji: {
-										id: "12234554564645",
-										name: "lmao",
+							{
+								placeholder: "COMMAND_1_SELECT_1_PLACEHOLDER",
+								minOptions: 1,
+								maxOptions: 1,
+								options: [
+									{
+										label: "COMMAND_1_SELECT_1_OPTION_1_LABEL",
+										description:
+											"COMMAND_1_SELECT_1_OPTION_1_DESCRIPTION",
+										value: "1",
+										emoji: {
+											id: "12234554564645",
+											name: "lmao",
+										},
 									},
-								},
-								{
-									label: "COMMAND_1_SELECT_1_OPTION_2_LABEL",
-									description:
-										"COMMAND_1_SELECT_1_OPTION_2_DESCRIPTION",
-									value: "2",
-								},
-							],
+									{
+										label: "COMMAND_1_SELECT_1_OPTION_2_LABEL",
+										description:
+											"COMMAND_1_SELECT_1_OPTION_2_DESCRIPTION",
+										value: "2",
+									},
+								],
+							},
 							async (bot, interaction) => {}
 						),
 					]),
 					button(
-						"COMMAND_1_BUTTON_1_TEXT",
-						"PRIMARY",
+						{
+							label: "COMMAND_1_BUTTON_1_TEXT",
+							style: ButtonStyles.Primary,
+						},
 						async (bot, interaction) =>
 							interaction.reply({
 								content:
@@ -83,15 +89,63 @@ myCoolBot
 	.addRawEventListeners([
 		rawEventListener(
 			GatewayDispatchEvents.MessageCreate,
-			async (bot, event: GatewayMessageCreateDispatchData) => {
-				if (event.content === "Hello there")
+			async (bot, message: GatewayMessageCreateDispatchData) => {
+				if (message.content === "Hello there")
 					bot.api
-						.post(`/channels/${event.channel_id}/messages`, {
+						.post(`/channels/${message.channel_id}/messages`, {
 							body: {
-								content: "General kenobi",
+								content: "General Kenobi",
+								components: [
+									// Link buttons don't need a handler becuase an interaction doesn't get sent
+									button({
+										label: "RAW_EVENT_1_BUTTON_TEXT",
+										style: ButtonStyles.Link,
+										url: "https://potato.edaz.codes/",
+									}).serialize(),
+								],
 							},
 						})
 						.catch((e) => {});
+			}
+		),
+		rawEventListener(
+			GatewayDispatchEvents.MessageCreate,
+			async (bot, message: GatewayMessageCreateDispatchData) => {
+				if (message.content.includes("69"))
+					bot.api
+						.post(`/channels/${message.channel_id}/messages`, {
+							body: {
+								content: "(nice)",
+								message_reference: {
+									message_id: message.id,
+								},
+							},
+						})
+						.catch((e) => {});
+			}
+		),
+		rawEventListener(
+			GatewayDispatchEvents.MessageReactionAdd,
+			async (bot, event: GatewayMessageReactionAddDispatchData) => {
+				const emoji = event.emoji;
+
+				// Sometimes name is null, for example when it has been deleted froma  guild
+				if (emoji.name) {
+					const encodedEmoji = emoji.id
+						? encodeURIComponent(`${emoji.name}:${emoji.id}`)
+						: encodeURIComponent(emoji.name);
+
+					bot.api
+						.delete(
+							`/channels/${event.channel_id}/messages/${event.message_id}/reactions/${encodedEmoji}/${event.user_id}`,
+							{
+								body: {
+									content: "General kenobi",
+								},
+							}
+						)
+						.catch((e) => {});
+				}
 			}
 		),
 	])

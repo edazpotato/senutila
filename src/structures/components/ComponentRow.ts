@@ -9,6 +9,8 @@ type ArrayOfAtLeastOneComponentRowComponents = [
 ];
 
 export class ComponentRow {
+	static ComponentType = 1;
+
 	private _components: ArrayOfAtLeastOneComponentRowComponents;
 
 	constructor(components: ArrayOfAtLeastOneComponentRowComponents) {
@@ -17,6 +19,18 @@ export class ComponentRow {
 
 	get components() {
 		return this._components;
+	}
+
+	serialize() {
+		return {
+			type: ComponentRow.ComponentType,
+			components: this._components
+				.map((component) => {
+					if (!component) return null;
+					return component.serialize();
+				})
+				.filter((serializedComponent) => !!serializedComponent),
+		};
 	}
 }
 
