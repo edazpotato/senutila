@@ -4,3 +4,4 @@ export * from "./Command";
 export * from "./Language";
 export * from "./Embed";
 export * from "./components";
+export * from "./RawEventListener";

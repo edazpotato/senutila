@@ -1,14 +1,19 @@
 import {
+	GatewayDispatchEvents,
+	GatewayMessageCreateDispatchData,
+} from "discord-api-types";
+import {
 	bot,
 	button,
 	category,
 	command,
 	componentRow,
 	language,
+	rawEventListener,
 	selectMenu,
-} from "../src";
+} from "../lib";
 
-// In an actual app you would do 'import { whatever } from "senutila"', but this is just to make handling dependencies easier on my end
+/* In an actual app you would do 'import { whatever } from "senutila"', but this is just to make handling dependencies easier on my end */
 
 const myCoolBot = bot({ token: "my token" });
 
@@ -74,5 +79,20 @@ myCoolBot
 				async (bot, interaction) => {}
 			),
 		]),
+	])
+	.addRawEventListeners([
+		rawEventListener(
+			GatewayDispatchEvents.MessageCreate,
+			async (bot, event: GatewayMessageCreateDispatchData) => {
+				if (event.content === "Hello there")
+					bot.api
+						.post(`/channels/${event.channel_id}/messages`, {
+							body: {
+								content: "General kenobi",
+							},
+						})
+						.catch((e) => {});
+			}
+		),
 	])
 	.start();

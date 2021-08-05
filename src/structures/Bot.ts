@@ -1,6 +1,8 @@
-import { Category, Command, Language } from "./index";
+import { Category, Command, Language, RawEventListener } from "./index";
 import { LanguageID, Snowflake } from "../typings/index";
 
+import { REST as DiscordRestAPIClient } from "@discordjs/rest";
+import { GatewayDispatchEvents } from "discord-api-types";
 import WebSocket from "ws";
 
 interface BotOptions {
@@ -13,8 +15,14 @@ export class Bot {
 	private _languages: Map<LanguageID, Language> = new Map();
 	private _defaultLanguage?: LanguageID;
 	private _categories: Map<string, Category> = new Map();
+	private _rawEventListeners: Map<GatewayDispatchEvents, RawEventListener[]> =
+		new Map();
 
 	protected _ws?: WebSocket;
+
+	api: DiscordRestAPIClient;
+
+	readonly apiVersion = 9;
 
 	constructor(options: BotOptions) {
 		this.__top_secret_TOKEN_dont_expose_this_please = options.token;
@@ -28,6 +36,10 @@ export class Bot {
 				[]
 			)
 		);
+
+		this.api = new DiscordRestAPIClient({
+			version: this.apiVersion.toString(),
+		}).setToken(this.__top_secret_TOKEN_dont_expose_this_please);
 	}
 
 	checkThatEverythingHasBeenSetProperly(): Bot {
@@ -98,7 +110,16 @@ export class Bot {
 		return this;
 	}
 
-	registerCommands(guildID?: Snowflake) {}
+	addRawEventListeners(listeners: RawEventListener[]): Bot {
+		for (const listener of listeners) {
+			this._rawEventListeners.set(listener.event, [
+				listener,
+				...(this._rawEventListeners.get(listener.event) || []),
+			]);
+		}
+		console.log(this._rawEventListeners);
+		return this;
+	}
 
 	start(): Bot {
 		return this;

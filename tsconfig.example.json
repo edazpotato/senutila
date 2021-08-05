@@ -1,11 +1,11 @@
+// This is not an example tsconfig file, it is the tsconfig file for the example code in the example/ directory
+
 {
 	"compilerOptions": {
-		"outDir": "lib",
 		"target": "es5",
 		"module": "commonjs",
 		"lib": ["es2015"],
 		"moduleResolution": "node",
-		"sourceMap": true,
 		"strict": true,
 		"strictFunctionTypes": true,
 		"noImplicitReturns": true,
@@ -16,9 +16,8 @@
 		// "noUnusedLocals": true,
 		// "noUnusedParameters": true,
 		"skipLibCheck": true,
-		"declaration": true,
 		"esModuleInterop": true
 	},
-	"include": ["src"],
-	"exclude": ["node_modules", "lib", "**/*.test.ts", "docs", "example"]
+	"include": ["example"],
+	"exclude": ["node_modules", "lib", "**/*.test.ts", "docs", "src"]
 }

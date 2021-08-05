@@ -9,7 +9,8 @@
 	],
 	"scripts": {
 		"build": "tsc",
-		"dev": "tsc --watch --incremental"
+		"dev": "tsc --watch --incremental",
+		"build-example": "tsc --project tsconfig.example.json"
 	},
 	"repository": {
 		"type": "git",
@@ -37,6 +38,7 @@
 		"zlib-sync": "^0.1.7"
 	},
 	"devDependencies": {
+		"@discordjs/rest": "^0.1.0-canary.0",
 		"@types/centra": "^2.2.0",
 		"@types/node": "^16.3.1",
 		"@types/ws": "^7.4.7",

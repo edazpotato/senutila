@@ -32,3 +32,5 @@ export type TopLevelMessageComponent = Button | ComponentRow;
 export type ComponentRowComponent = Button | SelectMenu;
 
 export type Snowflake = string;
+
+export type RawEventHandler = (bot: Bot, event: any) => Promise<any>;
