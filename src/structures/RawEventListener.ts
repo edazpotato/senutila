@@ -12,16 +12,22 @@ export class RawEventListener {
 		this._handler = handler;
 	}
 
-	load(bot: Bot): RawEventListener {
+	public load(bot: Bot): RawEventListener {
 		this._bot = bot;
 		return this;
 	}
 
-	get bot(): Bot | undefined {
+	public handle(data: any) {
+		if (!this._bot) throw new Error("Not loaded yet!");
+		console.log(`Handling event: ${this._event}`);
+		return this._handler(this._bot, data);
+	}
+
+	public get bot(): Bot | undefined {
 		return this._bot;
 	}
 
-	get event(): GatewayDispatchEvents {
+	public get event(): GatewayDispatchEvents {
 		return this._event;
 	}
 }

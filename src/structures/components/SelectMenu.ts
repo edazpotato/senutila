@@ -67,7 +67,7 @@ export class SelectMenu extends BaseComponent {
 		this._options = args.options;
 	}
 
-	serialize() {
+	public serialize() {
 		return {
 			type: SelectMenu.ComponentType,
 			custom_id: this._id,
@@ -93,19 +93,19 @@ export class SelectMenu extends BaseComponent {
 		};
 	}
 
-	get placeholderKey(): LanguageKey {
+	public get placeholderKey(): LanguageKey {
 		return this._placeholder;
 	}
 
-	get options(): SelectMenuOptions {
+	public get options(): SelectMenuOptions {
 		return this._options;
 	}
 
-	get minOptions(): number {
+	public get minOptions(): number {
 		return this._minOptions;
 	}
 
-	get maxOptions(): number {
+	public get maxOptions(): number {
 		return this._maxOptions;
 	}
 }

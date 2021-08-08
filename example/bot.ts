@@ -1,4 +1,10 @@
+const path = require("path");
+require("dotenv").config({
+	path: path.join(process.cwd(), "example", ".env"),
+});
+
 import {
+	ActivityTypes,
 	ButtonStyles,
 	bot,
 	button,
@@ -11,13 +17,31 @@ import {
 } from "../lib";
 import {
 	GatewayDispatchEvents,
+	GatewayIntentBits,
 	GatewayMessageCreateDispatchData,
 	GatewayMessageReactionAddDispatchData,
 } from "discord-api-types";
 
 /* In an actual app you would do 'import { whatever } from "senutila"', but this is just to make handling dependencies easier on my end */
 
-const myCoolBot = bot({ token: "my token" });
+if (!process.env.TOKEN) throw new Error("Set TOKEN in .env file pls");
+
+const myCoolBot = bot({
+	token: process.env.TOKEN,
+	intents:
+		GatewayIntentBits.GuildMessages |
+		GatewayIntentBits.GuildMessageReactions, // The '|' character here is a bitwise OR operator, used to combine two gateway intents together
+	presence: {
+		status: "online",
+		afk: false,
+		activities: [
+			{
+				name: "the game of life",
+				type: ActivityTypes.Game,
+			},
+		],
+	},
+});
 
 myCoolBot
 	.registerLanguages([
@@ -48,7 +72,7 @@ myCoolBot
 											"COMMAND_1_SELECT_1_OPTION_1_DESCRIPTION",
 										value: "1",
 										emoji: {
-											id: "12234554564645",
+											id: 12234554564645,
 											name: "lmao",
 										},
 									},
@@ -90,7 +114,10 @@ myCoolBot
 		rawEventListener(
 			GatewayDispatchEvents.MessageCreate,
 			async (bot, message: GatewayMessageCreateDispatchData) => {
-				if (message.content === "Hello there")
+				console.log(
+					`Message from ${message.author.username}#${message.author.discriminator}: ${message.content}`
+				);
+				if (message.content.toLowerCase() === "hello there")
 					bot.api
 						.post(`/channels/${message.channel_id}/messages`, {
 							body: {
@@ -105,12 +132,7 @@ myCoolBot
 								],
 							},
 						})
-						.catch((e) => {});
-			}
-		),
-		rawEventListener(
-			GatewayDispatchEvents.MessageCreate,
-			async (bot, message: GatewayMessageCreateDispatchData) => {
+						.catch(console.log);
 				if (message.content.includes("69"))
 					bot.api
 						.post(`/channels/${message.channel_id}/messages`, {
@@ -121,7 +143,7 @@ myCoolBot
 								},
 							},
 						})
-						.catch((e) => {});
+						.catch(console.log);
 			}
 		),
 		rawEventListener(
@@ -143,5 +165,5 @@ myCoolBot
 				}
 			}
 		),
-	])
-	.start();
+	]);
+myCoolBot.start();

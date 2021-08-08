@@ -1,7 +1,7 @@
 import { Bot, Embed } from "../structures/index";
 import { LanguageKey, TopLevelMessageComponent } from "../typings/index";
 
-interface InteractionData {}
+import { GatewayInteractionCreateDispatchData } from "discord-api-types";
 
 interface InteractionResponseData {
 	content?: LanguageKey;
@@ -28,7 +28,7 @@ interface InteractionResponseData {
 }
 
 export class Interaction {
-	constructor(bot: Bot, data: InteractionData) {}
+	constructor(bot: Bot, data: GatewayInteractionCreateDispatchData) {}
 
 	async reply(
 		data: InteractionResponseData = {
@@ -37,5 +37,7 @@ export class Interaction {
 			components: [],
 			embeds: [],
 		}
-	) {}
+	) {
+		return;
+	}
 }

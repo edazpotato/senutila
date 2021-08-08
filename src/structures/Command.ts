@@ -1,5 +1,6 @@
 import { BaseStructure, Interaction } from "../internals/index";
 
+import { APIApplicationCommandInteraction } from "discord-api-types";
 import { InteractionHandler } from "../typings/index";
 
 const commandsNameRegExp = /^[\w-]{1,32}$/;
@@ -23,16 +24,18 @@ export class Command extends BaseStructure {
 		this._handler = handler;
 	}
 
-	async handle(interaction: Interaction) {
+	public handle(rawInteraction: APIApplicationCommandInteraction) {
 		if (!this.bot)
 			throw new Error(
 				`Tried to handle interaction before command was loaded. ID: ${this.id}`
 			);
 
+		const interaction = new Interaction(this.bot, rawInteraction);
+
 		return this._handler(this.bot, interaction);
 	}
 
-	get descriptionKey(): string {
+	public get descriptionKey(): string {
 		return this._descriptionKey;
 	}
 }

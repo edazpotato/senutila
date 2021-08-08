@@ -21,7 +21,7 @@ export class Category extends BaseStructure {
 		}
 	}
 
-	load(bot: Bot): Category {
+	public load(bot: Bot): Category {
 		this._commands.forEach((command) => {
 			command.load(bot);
 		});
@@ -29,11 +29,11 @@ export class Category extends BaseStructure {
 		return this;
 	}
 
-	get nameKey(): string {
+	public get nameKey(): string {
 		return this._nameKey;
 	}
 
-	get commands() {
+	public get commands() {
 		return this._commands;
 	}
 }

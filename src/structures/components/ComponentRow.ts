@@ -17,11 +17,11 @@ export class ComponentRow {
 		this._components = components;
 	}
 
-	get components() {
+	public get components() {
 		return this._components;
 	}
 
-	serialize() {
+	public serialize() {
 		return {
 			type: ComponentRow.ComponentType,
 			components: this._components

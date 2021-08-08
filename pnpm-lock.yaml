@@ -10,7 +10,8 @@ specifiers:
   centra: ^2.5.0
   chalk: ^4.1.1
   discord-api-types: ^0.20.2
-  erlpack: github:discord/erlpack
+  dotenv: ^10.0.0
+  erlpack: ^0.1.3
   rimraf: ^3.0.2
   tweetnacl: ^1.0.3
   typescript: ^4.3.5
@@ -25,7 +26,8 @@ dependencies:
   centra: 2.5.0
   chalk: 4.1.1
   discord-api-types: 0.20.2
-  erlpack: github.com/discord/erlpack/e27db8f82892bdb9b28a0547cc394d68b5d2242d
+  dotenv: 10.0.0
+  erlpack: 0.1.3
   tweetnacl: 1.0.3
   utf-8-validate: 5.0.5
   ws: 7.5.2_72ef9f06cb99540da679cbf1bf7a3256
@@ -185,6 +187,19 @@ packages:
     engines: {node: '>=12'}
     dev: false
 
+  /dotenv/10.0.0:
+    resolution: {integrity: sha512-rlBi9d8jpv9Sf1klPjNfFAuWDjKLwTIJJ/VxtoTwIR6hnZxcEOQCZg2oIL3MWBYw5GpUDKOEnND7LXTbIpQ03Q==}
+    engines: {node: '>=10'}
+    dev: false
+
+  /erlpack/0.1.3:
+    resolution: {integrity: sha512-QeG9v8CVsY/a/IoQi8zjn23aYKcziOihAxwjUl3tI/KB4R1FjTtctDAAMovgtpC16S+WiOauers2oWwIOQtKBQ==}
+    requiresBuild: true
+    dependencies:
+      bindings: 1.5.0
+      nan: 2.14.2
+    dev: false
+
   /event-target-shim/5.0.1:
     resolution: {integrity: sha512-i/2XbnSz/uxRCU6+NdVJgKWDTM427+MqYbkQzD321DuCQJUqOuJKIA0IM2+W2xtYHdKOmZ4dR6fExsd4SXL+WQ==}
     engines: {node: '>=6'}
@@ -336,15 +351,5 @@ packages:
     resolution: {integrity: sha512-UmciU6ZrIwtwPC8noMzq+kGMdiWwNRZ3wC0SbED4Ew5Ikqx14MqDPRs/Pbk+3rZPh5SzsOgUBs1WRE0iieddpg==}
     requiresBuild: true
     dependencies:
-      nan: 2.14.2
-    dev: false
-
-  github.com/discord/erlpack/e27db8f82892bdb9b28a0547cc394d68b5d2242d:
-    resolution: {tarball: https://codeload.github.com/discord/erlpack/tar.gz/e27db8f82892bdb9b28a0547cc394d68b5d2242d}
-    name: erlpack
-    version: 0.1.3
-    requiresBuild: true
-    dependencies:
-      bindings: 1.5.0
       nan: 2.14.2
     dev: false

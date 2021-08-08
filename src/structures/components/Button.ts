@@ -35,7 +35,7 @@ export class Button extends BaseComponent {
 		this._url = args.url;
 	}
 
-	serialize() {
+	public serialize() {
 		const data: any = {
 			type: Button.ComponentType,
 			style: this._style,
@@ -55,15 +55,15 @@ export class Button extends BaseComponent {
 		return data;
 	}
 
-	get url(): URL | undefined {
+	public get url(): URL | undefined {
 		return this._url;
 	}
 
-	get label(): LanguageKey {
+	public get label(): LanguageKey {
 		return this._label;
 	}
 
-	get style(): ButtonStyles {
+	public get style(): ButtonStyles {
 		return this._style;
 	}
 }

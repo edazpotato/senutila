@@ -30,14 +30,14 @@ export class Language extends BaseStructure {
 		}
 	}
 
-	get id(): LanguageID {
+	public get id(): LanguageID {
 		return this._id;
 	}
 
-	get description(): string {
+	public get description(): string {
 		return this._description;
 	}
-	get dictionary(): LanguageDictionary {
+	public get dictionary(): LanguageDictionary {
 		return this._dictionary;
 	}
 }
