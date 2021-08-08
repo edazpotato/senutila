@@ -1,6 +1,6 @@
 # Senutila
 
-A Discord bot framework that's focused on making the developer experience great. Also better than Discord.JS.
+A Discord bot framework, focused on providing a great developer experience. Also better than `discord.js`.
 
 ## Example
 
@@ -9,4 +9,4 @@ See [example/bot.ts](https://github.com/edazpotato/senutila/blob/main/example/bo
 ## Other notes
 
 -   Node.js version 16 or greater is required.
--   Senutila uses [pnpm](https://pnpm.io/), for dependencies. Install it with `npm i -g pnpm`, and then use all npm commands like normal, except witha prepended p character.
+-   Senutila uses [pnpm](https://pnpm.io/) for dependencies. Install it with `npm i -g pnpm`, and then use all npm commands like normal, except with a prepended p character.
