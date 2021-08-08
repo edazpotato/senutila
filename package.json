@@ -37,7 +37,7 @@
 		"bufferutil": "^4.0.3",
 		"centra": "^2.5.0",
 		"chalk": "^4.1.1",
-		"discord-api-types": "^0.20.2",
+		"discord-api-types": "^0.22.0",
 		"dotenv": "^10.0.0",
 		"erlpack": "^0.1.3",
 		"tweetnacl": "^1.0.3",
