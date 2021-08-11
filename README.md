@@ -1,4 +1,5 @@
-# Senutila
+<center>![Artboard 1](https://user-images.githubusercontent.com/46797041/128955016-ea503a79-ea58-4636-baa5-d000d7b06d09.png)</center>
+<center><h1>Senutila</h1></center>
 
 A Discord bot framework that's focused on making the developer experience great. Also better than Discord.JS.
 
