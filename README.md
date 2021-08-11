@@ -10,6 +10,10 @@
 
 See [example/bot.ts](https://github.com/edazpotato/senutila/blob/main/example/bot.ts) for example usage.
 
+## Who's using it?
+Senutila is being used in production at scale by these bots:
+- [POTATO](https://github.com/edazpotato/POTATO)
+
 ## Other notes
 
 -   Node.js version 16 or greater is required.
