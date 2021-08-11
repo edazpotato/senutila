@@ -1,7 +1,7 @@
 <div align="center">
   <img src="https://user-images.githubusercontent.com/46797041/128955250-ace7eb54-7ffb-47d5-980d-7b133a180f1f.png" width="256" height="256" /> 
   <h1>Senutila</h1>
-  <h5>A Discord bot framework that's focused on making the developer experience great. Also better than Discord.JS.</h5>
+  <h6>A Discord bot framework that's focused on making the developer experience great. Also better than Discord.JS.</h6>
 </div>
 
 
