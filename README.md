@@ -1,18 +1,18 @@
 <div align="center">
-  <img src="https://user-images.githubusercontent.com/46797041/128955250-ace7eb54-7ffb-47d5-980d-7b133a180f1f.png" width="256" height="256" /> 
+  <img src="https://raw.githubusercontent.com/edazpotato/senutila/main/images/logo.png" width="256" height="256" /> 
   <h1>Senutila</h1>
   <h4>A Discord bot framework that's focused on making the developer experience great. Also better than Discord.JS.</h4>
 </div>
-
-
 
 ## Example
 
 See [example/bot.ts](https://github.com/edazpotato/senutila/blob/main/example/bot.ts) for example usage.
 
 ## Who's using it?
+
 Senutila is being used in production at scale by these bots:
-- [POTATO](https://github.com/edazpotato/POTATO)
+
+-   [POTATO](https://github.com/edazpotato/POTATO)
 
 ## Other notes
 
