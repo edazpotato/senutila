@@ -15,7 +15,7 @@ lib/
 *.d.ts
 .next
 
-docs/api
+api/
 
 # Logs
 logs

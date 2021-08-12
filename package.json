@@ -10,7 +10,8 @@
 	"scripts": {
 		"build": "rimraf lib/*&&pnpm run pre-build&&tsc",
 		"dev": "tsc --watch --incremental",
-		"build-example": "rimraf example/*.js&&pnpm run pre-build-example&&tsc --project tsconfig.example.json"
+		"build-example": "rimraf example/*.js&&pnpm run pre-build-example&&tsc --project tsconfig.example.json",
+		"build-api-docs": "rimraf api/*&&typedoc"
 	},
 	"repository": {
 		"type": "git",
