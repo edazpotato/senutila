@@ -8,9 +8,9 @@
 		"package.json"
 	],
 	"scripts": {
-		"build": "rimraf lib/*&&pnpm run pre-build&&tsc",
+		"build": "rimraf lib/*&&tsc",
 		"dev": "tsc --watch --incremental",
-		"build-example": "rimraf example/*.js&&pnpm run pre-build-example&&tsc --project tsconfig.example.json",
+		"build-example": "rimraf example/*.js&&tsc --project tsconfig.example.json",
 		"build-api-docs": "rimraf api/*&&typedoc"
 	},
 	"repository": {
@@ -51,8 +51,5 @@
 		"rimraf": "^3.0.2",
 		"typedoc": "^0.21.5",
 		"typescript": "^4.3.5"
-	},
-	"engines": {
-		"node": ">=16"
 	}
 }
