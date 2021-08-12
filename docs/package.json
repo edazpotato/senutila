@@ -1,0 +1,19 @@
+{
+	"name": "senutila-docs",
+	"version": "1.0.0",
+	"description": "Docs for senutila",
+	"private": true,
+	"scripts": {
+		"dev": "next dev",
+		"build": "next build"
+	},
+	"author": "Edazpotato & Other kind people",
+	"license": "MIT",
+	"dependencies": {
+		"next": "^11.1.0",
+		"nextra": "^1.1.0",
+		"nextra-theme-docs": "^1.2.1",
+		"react": "^17.0.2",
+		"react-dom": "^17.0.2"
+	}
+}

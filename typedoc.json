@@ -1,7 +1,4 @@
 {
 	"entryPoints": ["src/index.ts"],
-	"out": "docs/api",
-	"readme": "docs/README.md",
-	"entryDocument": "docs/README.md",
-	"hideInPageTOC": true
+	"out": "docs/api"
 }
