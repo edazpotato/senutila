@@ -6,6 +6,7 @@
 	"scripts": {
 		"dev": "next dev",
 		"build": "next build",
+		"start": "next start",
 		"build-api": "rimraf api/*&&typedoc"
 	},
 	"author": "Edazpotato & Other kind people",

@@ -1,4 +1,5 @@
 {
 	"entryPoints": ["../src/index.ts"],
-	"out": "api"
+	"out": "api",
+	"exclude": ["../docs/**/*", "../example/**/*"]
 }
