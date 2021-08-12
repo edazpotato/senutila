@@ -10,8 +10,8 @@
 	"scripts": {
 		"pre-build": "rimraf lib/*",
 		"build": "pnpm run pre-build&&tsc",
-		"pre-build-docs-api": "rimraf docs/api/*",
-		"build-docs-api": "pnpm run pre-build-docs&&typedoc",
+		"pre-build-api-docs": "rimraf docs/api/*",
+		"build-api-docs": "pnpm run pre-build-docs&&typedoc",
 		"dev": "tsc --watch --incremental",
 		"pre-build-example": "rimraf example/*.js",
 		"build-example": "pnpm run pre-build-example&&tsc --project tsconfig.example.json"
