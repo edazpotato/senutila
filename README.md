@@ -4,6 +4,8 @@
   <h4>A Discord bot framework that's focused on making the developer experience great. Also better than Discord.JS.</h4>
 </div>
 
+[Github](https://github.com/edazpotato/senutila) | [NPM](https://www.npmjs.com/package/senutila) | [Docs](https://senutila.edaz.codes/) | [API reference](https://api.senutila.edaz.codes/)
+
 ## Example
 
 See [example/bot.ts](https://github.com/edazpotato/senutila/blob/main/example/bot.ts) for example usage.
