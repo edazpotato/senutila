@@ -10,9 +10,12 @@ yarn.lock
 # Built files
 lib/
 *.js
+!next.config.js
 *.js.map
 *.d.ts
+.next
 
+api/
 
 # Logs
 logs
