@@ -8,12 +8,15 @@ import {
 	ButtonStyles,
 	bot,
 	button,
-	category,
-	command,
 	componentRow,
+	contextMenuCommand,
 	language,
+	messageContextMenuCommand,
 	rawEventListener,
 	selectMenu,
+	slashCommand,
+	slashCommandCategory,
+	userContextMenuCommand,
 } from "../lib";
 import {
 	GatewayDispatchEvents,
@@ -54,61 +57,83 @@ myCoolBot
 		}),
 	])
 	.setDefaultLanguage("en-GB")
-	.addCommands([
-		command("cmd_1", "COMMAND_1_DESCRIPTION", async (bot, interaction) =>
-			interaction.reply({
-				content: ["COMMAND_1_RESPONSE", Math.random() * 100],
-				components: [
-					componentRow([
-						selectMenu(
-							{
-								placeholder: "COMMAND_1_SELECT_1_PLACEHOLDER",
-								minOptions: 1,
-								maxOptions: 1,
-								options: [
-									{
-										label: "COMMAND_1_SELECT_1_OPTION_1_LABEL",
-										description:
-											"COMMAND_1_SELECT_1_OPTION_1_DESCRIPTION",
-										value: "1",
-										emoji: {
-											id: 12234554564645,
-											name: "lmao",
+	.addSlashCommands([
+		slashCommand(
+			"cmd_1",
+			"COMMAND_1_DESCRIPTION",
+			async (bot, interaction) =>
+				interaction.reply({
+					content: ["COMMAND_1_RESPONSE", Math.random() * 100],
+					components: [
+						componentRow([
+							selectMenu(
+								{
+									placeholder:
+										"COMMAND_1_SELECT_1_PLACEHOLDER",
+									minOptions: 1,
+									maxOptions: 1,
+									options: [
+										{
+											label: "COMMAND_1_SELECT_1_OPTION_1_LABEL",
+											description:
+												"COMMAND_1_SELECT_1_OPTION_1_DESCRIPTION",
+											value: "1",
+											emoji: {
+												id: 12234554564645,
+												name: "lmao",
+											},
 										},
-									},
-									{
-										label: "COMMAND_1_SELECT_1_OPTION_2_LABEL",
-										description:
-											"COMMAND_1_SELECT_1_OPTION_2_DESCRIPTION",
-										value: "2",
-									},
-								],
+										{
+											label: "COMMAND_1_SELECT_1_OPTION_2_LABEL",
+											description:
+												"COMMAND_1_SELECT_1_OPTION_2_DESCRIPTION",
+											value: "2",
+										},
+									],
+								},
+								async (bot, interaction) => {}
+							),
+						]),
+						button(
+							{
+								label: "COMMAND_1_BUTTON_1_TEXT",
+								style: ButtonStyles.Primary,
 							},
-							async (bot, interaction) => {}
+							async (bot, interaction) =>
+								interaction.reply({
+									content:
+										"COMMAND_1_BUTTON_1_INTERACTION_RESPONSE_TEXT",
+									ephemeral: true,
+								})
 						),
-					]),
-					button(
-						{
-							label: "COMMAND_1_BUTTON_1_TEXT",
-							style: ButtonStyles.Primary,
-						},
-						async (bot, interaction) =>
-							interaction.reply({
-								content:
-									"COMMAND_1_BUTTON_1_INTERACTION_RESPONSE_TEXT",
-								ephemeral: true,
-							})
-					),
-				],
-			})
+					],
+				})
 		),
-		category("catgegory_1", "CATEGORY_1_NAME", [
-			command(
+		slashCommandCategory("catgegory_1", "CATEGORY_1_NAME", [
+			slashCommand(
 				"cmd_2",
 				"COMMAND_2_DESCRIPTION",
 				async (bot, interaction) => {}
 			),
 		]),
+	])
+	.addContextMenuCommands([
+		contextMenuCommand(
+			"message",
+			"message_context__1",
+			"MESSAGE_CONTEXT_MENU_COMMAND_1",
+			async (bot, interaction) => {}
+		),
+		messageContextMenuCommand(
+			"message_context_command_2",
+			"MESSAGE_CONTEXT_MENU_COMMAND_2",
+			async (bot, interaction) => {}
+		),
+		userContextMenuCommand(
+			"user_context_command",
+			"USER_CONTEXT_MENU_COMMAND",
+			async (bot, interaction) => {}
+		),
 	])
 	.addRawEventListeners([
 		rawEventListener(

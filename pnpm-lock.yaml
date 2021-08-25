@@ -9,7 +9,7 @@ specifiers:
   bufferutil: ^4.0.3
   centra: ^2.5.0
   chalk: ^4.1.1
-  discord-api-types: ^0.22.0
+  discord-api-types: github:discordjs/discord-api-types
   dotenv: ^10.0.0
   erlpack: ^0.1.3
   rimraf: ^3.0.2

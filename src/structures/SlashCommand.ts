@@ -1,23 +1,23 @@
 import { BaseStructure, Interaction } from "../internals/index";
 
-import { APIApplicationCommandInteraction } from "discord-api-types";
+import { APIApplicationCommandInteraction } from "discord-api-types/v9";
 import { InteractionHandler } from "../typings/index";
 
 const commandsNameRegExp = /^[\w-]{1,32}$/;
 
-export class Command extends BaseStructure {
+export class SlashCommand extends BaseStructure {
 	private _descriptionKey: string;
 	private _handler: InteractionHandler;
 
 	constructor(
-		id: string,
+		name: string,
 		descriptionKey: string,
 		handler: InteractionHandler
 	) {
-		const commandID = id.toLowerCase();
+		const commandID = name.toLowerCase();
 		if (!commandsNameRegExp.test(commandID))
 			throw new Error(
-				`Command ids must be between 1 and 32 characters is length (inclusive), and contain only letters, numbers, hyphens and underscores.`
+				`Slash command names must be between 1 and 32 characters is length (inclusive), and contain only letters, numbers, hyphens and underscores.`
 			);
 		super(commandID);
 		this._descriptionKey = descriptionKey;
@@ -27,7 +27,7 @@ export class Command extends BaseStructure {
 	public handle(rawInteraction: APIApplicationCommandInteraction) {
 		if (!this.bot)
 			throw new Error(
-				`Tried to handle interaction before command was loaded. ID: ${this.id}`
+				`Tried to handle interaction before slash command was loaded. ID: ${this.id}`
 			);
 
 		const interaction = new Interaction(this.bot, rawInteraction);
@@ -40,8 +40,8 @@ export class Command extends BaseStructure {
 	}
 }
 
-export function command(
-	...args: ConstructorParameters<typeof Command>
-): Command {
-	return new Command(...args);
+export function slashCommand(
+	...args: ConstructorParameters<typeof SlashCommand>
+): SlashCommand {
+	return new SlashCommand(...args);
 }

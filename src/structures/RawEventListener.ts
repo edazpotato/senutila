@@ -1,5 +1,5 @@
 import { Bot } from "./index";
-import { GatewayDispatchEvents } from "discord-api-types";
+import { GatewayDispatchEvents } from "discord-api-types/v9";
 import { RawEventHandler } from "../typings/index";
 
 export class RawEventListener {

@@ -1,9 +1,15 @@
-import { Category, Command, Language, RawEventListener } from "./index";
+import {
+	ContextMenuCommand,
+	Language,
+	RawEventListener,
+	SlashCommand,
+	SlashCommandCategory,
+} from "./index";
 import {
 	GatewayDispatchEvents,
 	GatewayInteractionCreateDispatchData,
 	InteractionType,
-} from "discord-api-types";
+} from "discord-api-types/v9";
 import {
 	GatewayIdentifyData,
 	GatewaySendOpcodes,
@@ -31,8 +37,11 @@ export class Bot {
 
 	private _languages: Collection<LanguageID, Language> = new Collection();
 	private _defaultLanguage?: LanguageID;
-	private _categories: Collection<string, Category> = new Collection();
-	private _commands: Collection<string, Command> = new Collection();
+	private _slashCommandCategories: Collection<string, SlashCommandCategory> =
+		new Collection();
+	private _slashCommands: Collection<string, SlashCommand> = new Collection();
+	private _contextMenuCommands: Collection<string, ContextMenuCommand> =
+		new Collection();
 	private _rawEventListeners: Collection<
 		GatewayDispatchEvents,
 		RawEventListener[]
@@ -77,9 +86,9 @@ export class Bot {
 		this._intents = options.intents;
 
 		// Category for commands that aren't in any other ones
-		this._categories.set(
+		this._slashCommandCategories.set(
 			"__senutila_default_other",
-			new Category(
+			new SlashCommandCategory(
 				"__senutila_default_other",
 				"__SENUTILA_DEFAULT_CATEGORY_OTHER",
 				[]
@@ -93,7 +102,7 @@ export class Bot {
 		// console.log("Set api token");
 	}
 
-	checkThatEverythingHasBeenSetProperly(): Bot {
+	private checkThatEverythingHasBeenSetProperly(): boolean | Error {
 		// Check languages
 		if (this._languages.size < 1) {
 			throw new Error("No languages have been registered yet.");
@@ -101,11 +110,10 @@ export class Bot {
 		if (!this._defaultLanguage) {
 			throw new Error("You need to set a defualt language.");
 		}
-
-		return this;
+		return true;
 	}
 
-	setDefaultLanguage(language: LanguageID): Bot {
+	public setDefaultLanguage(language: LanguageID): Bot {
 		if (this._languages.has(language)) {
 			this._defaultLanguage = language;
 			return this;
@@ -115,7 +123,7 @@ export class Bot {
 		);
 	}
 
-	registerLanguages(languages: Language[]): Bot {
+	public registerLanguages(languages: Language[]): Bot {
 		// Add languages to Collection
 		for (const language of languages) {
 			if (this._languages.has(language.id))
@@ -128,13 +136,15 @@ export class Bot {
 		return this;
 	}
 
-	addCommands(thingsToRegister: (Category | Command)[]): Bot {
+	public addSlashCommands(
+		thingsToRegister: (SlashCommandCategory | SlashCommand)[]
+	): Bot {
 		this.checkThatEverythingHasBeenSetProperly();
 
 		for (const thing of thingsToRegister) {
-			if (thing instanceof Command) {
+			if (thing instanceof SlashCommand) {
 				// Default category
-				const category = this._categories.get(
+				const category = this._slashCommandCategories.get(
 					"__senutila_default_other"
 				);
 				// Stop people from being stupid
@@ -149,13 +159,13 @@ export class Bot {
 					);
 				thing.load(this);
 
-				// Add the command to the default commands collection
+				// Add the command to the default slash commands collection
 				category.commands.set(thing.id, thing);
 
-				// Add it to the global commands collection
-				this._commands.set(thing.id, thing);
+				// Add it to the slash commands collection
+				this._slashCommands.set(thing.id, thing);
 			} else {
-				if (this._categories.has(thing.id))
+				if (this._slashCommandCategories.has(thing.id))
 					throw new Error(
 						`Multiple categories with the same ID: ${thing.id}.`
 					);
@@ -163,13 +173,24 @@ export class Bot {
 
 				// Add the categories' commands to the global commands collection
 				thing.commands.forEach((command) => {
-					this._commands.set(command.id, command);
+					this._slashCommands.set(command.id, command);
 				});
 
 				// Add the cateogory to the global categories collection
-				this._categories.set(thing.id, thing);
+				this._slashCommandCategories.set(thing.id, thing);
 			}
 		}
+		return this;
+	}
+
+	public addContextMenuCommands(toRegister: ContextMenuCommand[]): Bot {
+		this.checkThatEverythingHasBeenSetProperly();
+
+		for (const thing of toRegister) {
+			thing.load(this);
+			this._contextMenuCommands.set(thing.id, thing);
+		}
+
 		return this;
 	}
 
@@ -390,7 +411,7 @@ export class Bot {
 		if (eventName === GatewayDispatchEvents.InteractionCreate) {
 			const interaction = data as GatewayInteractionCreateDispatchData;
 			if (interaction.type === InteractionType.ApplicationCommand) {
-				const command = this._commands.get(interaction.data.name);
+				const command = this._slashCommands.get(interaction.data.name);
 				if (command) command.handle(interaction);
 			} else if (interaction.type === InteractionType.MessageComponent) {
 			}
@@ -459,8 +480,8 @@ ${chalk.blue("Per 5 seconds:")} ${chalk.cyan(
 		return this;
 	}
 
-	public get categories() {
-		return this._categories;
+	public get slashCommandCategories() {
+		return this._slashCommandCategories;
 	}
 }
 
