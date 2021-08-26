@@ -27,7 +27,7 @@ export class ComponentRow {
 			components: this._components
 				.map((component) => {
 					if (!component) return null;
-					return component.serialize();
+					return component.serialize(this);
 				})
 				.filter((serializedComponent) => !!serializedComponent),
 		};

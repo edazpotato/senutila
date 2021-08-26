@@ -7,6 +7,7 @@ import {
 } from "../../typings/index";
 
 import { BaseComponent } from "../../internals/index";
+import { ComponentRow } from "./index";
 
 export class Button extends BaseComponent {
 	static ComponentType = 2;
@@ -35,7 +36,11 @@ export class Button extends BaseComponent {
 		this._url = args.url;
 	}
 
-	public serialize() {
+	/**
+	 * **DO NOT CALL THIS METHOD**. Unless you're a component row. This is because Discord requires buttons
+	 * to be inside of component row.
+	 */
+	public serialize(row: ComponentRow) {
 		const data: any = {
 			type: Button.ComponentType,
 			style: this._style,

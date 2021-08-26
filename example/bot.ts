@@ -147,13 +147,19 @@ myCoolBot
 						.post(`/channels/${message.channel_id}/messages`, {
 							body: {
 								content: "General Kenobi",
+								message_reference: {
+									message_id: message.id,
+								},
 								components: [
-									// Link buttons don't need a handler becuase an interaction doesn't get sent
-									button({
-										label: "RAW_EVENT_1_BUTTON_TEXT",
-										style: ButtonStyles.Link,
-										url: "https://potato.edaz.codes/",
-									}).serialize(),
+									// Link buttons don't need a handler becuase an interaction doesn't get sent.
+									// Buttons also need to be inside of an ActionRow.
+									componentRow([
+										button({
+											label: "RAW_EVENT_1_BUTTON_TEXT",
+											style: ButtonStyles.Link,
+											url: "https://senutila.edaz.codes/",
+										}),
+									]).serialize(),
 								],
 							},
 						})

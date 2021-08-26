@@ -219,14 +219,14 @@ export class Bot {
 	) {
 		if (!this._ws) return false;
 		let data: OutgoingGatewayDispatchPayload = { op: opcode };
-		if (payload) data.d = payload;
+		if (payload !== undefined) data.d = payload;
 		let compressed;
 		if (this.gatewayEncoding === "etf") {
 			compressed = erlpack.pack(data);
 		} else {
 			compressed = JSON.stringify(data);
 		}
-		// console.log(comprsessed);
+		// console.log(compressed);
 		return this._ws.send(compressed, callback);
 	}
 
@@ -248,10 +248,10 @@ export class Bot {
 
 	private sendWebSocketHeartbeat(bot: Bot, schedule: boolean = true) {
 		/*
-			Becuase this is sometimes caleld from a setTimeout, 'this'
-			won't always refer to the Bot instance, so it needs to be
-			passed in as a parameter. Also remember to not use 'this'
-			in this method, use 'bot' inststead.
+			Becuase this method is sometimes called from a setTimeout,
+			'this' won't always refer to the Bot instance, so it needs
+			to be passed in as a parameter. Also remember to not use
+			'this' in this method, use 'bot' inststead.
 		*/
 
 		if (bot.lastWebSocketHeartbeatReceivedAcknolegement === false) {
@@ -261,8 +261,9 @@ export class Bot {
 		}
 
 		bot.lastWebSocketHeartbeatReceivedAcknolegement = false;
-		bot.sendWebSocketMessage(GatewaySendOpcodes.Heartbeat);
-		console.log("Sent heartbeat!");
+		// console.log(GatewaySendOpcodes.Heartbeat);
+		bot.sendWebSocketMessage(GatewaySendOpcodes.Heartbeat, null);
+		// console.log("Sent heartbeat!");
 
 		if (schedule) {
 			if (!bot.webSocketHeartbeatInterval) return;
@@ -383,8 +384,11 @@ export class Bot {
 			case 10:
 				this.webSocketHeartbeatInterval =
 					dataContent.heartbeat_interval;
+				// console.log(
+				// 	`Heartbeat interval: ${this.webSocketHeartbeatInterval}`
+				// );
 				this.webSocketHeartbeatTimeout = setTimeout(() => {
-					console.log("About to hearbeat!");
+					// console.log("About to hearbeat!");
 					this.sendWebSocketHeartbeat(this);
 				}, dataContent.heartbeat_interval * Math.random());
 				if (!this.resumingWebSocketConnection)
