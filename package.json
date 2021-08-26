@@ -11,6 +11,7 @@
 		"build": "rimraf lib/*&&tsc",
 		"dev": "tsc --watch --incremental",
 		"build-example": "rimraf example/*.js&&tsc --project tsconfig.example.json",
+		"dev-example": "rimraf example/*.js&&tsc --project tsconfig.example.json --watch --incremental",
 		"build-api-docs": "rimraf api/*&&typedoc"
 	},
 	"repository": {

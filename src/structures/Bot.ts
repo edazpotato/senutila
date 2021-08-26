@@ -29,9 +29,12 @@ interface BotOptions {
 	token: string;
 	presence?: Presence;
 	intents: number;
+	debug?: boolean;
 }
 
 export class Bot {
+	readonly debug?: boolean;
+
 	private __top_secret_TOKEN_dont_expose_this_please: string;
 	private _inital_presence?: Presence;
 
@@ -81,6 +84,7 @@ export class Bot {
 	}
 
 	constructor(options: BotOptions) {
+		options.debug && (this.debug = options.debug);
 		this.__top_secret_TOKEN_dont_expose_this_please = options.token;
 		this._inital_presence = options.presence;
 		this._intents = options.intents;
@@ -275,7 +279,7 @@ export class Bot {
 	}
 
 	private sendWebSocketIdentify() {
-		console.info(chalk.blue("Sending identify message..."));
+		this.debug && console.info(chalk.blue("Sending identify message..."));
 		const data: GatewayIdentifyData = {
 			token: this.__top_secret_TOKEN_dont_expose_this_please,
 			intents: this._intents,
@@ -351,7 +355,8 @@ export class Bot {
 		}
 
 		// if (opcode !== 0)
-		console.log(`OP: ${opcode}, Name: ${eventName}`);
+		this.debug &&
+			console.info(chalk.cyan(`OP: ${opcode}, Name: ${eventName}`));
 
 		switch (opcode) {
 			case 0:
@@ -405,6 +410,9 @@ export class Bot {
 		eventName: GatewayDispatchEvents,
 		data: any
 	) {
+		if (eventName === GatewayDispatchEvents.Ready && this.debug)
+			console.info(chalk.green("Ready!"));
+
 		const customHandlers = this._rawEventListeners.get(eventName);
 		if (customHandlers) {
 			customHandlers.forEach((handler) => {
@@ -426,7 +434,7 @@ export class Bot {
 		const ws = new WebSocket(bot.gatewayAddress);
 
 		ws.addEventListener("open", () => {
-			console.info(chalk.green("WebSocket opened!"));
+			this.debug && console.info(chalk.green("WebSocket opened!"));
 			if (resume) {
 				bot.resumeWebSocketConnection();
 			}
@@ -467,17 +475,18 @@ export class Bot {
 
 		this.gatewayRoot = res.url;
 
-		console.info(
-			`Session start limits:
+		this.debug &&
+			console.info(
+				`Session start limits:
 ${chalk.blue("Total:")} ${chalk.cyan(res.session_start_limit.total)}
 ${chalk.blue("Remaining:")} ${chalk.cyan(res.session_start_limit.remaining)}
 ${chalk.blue("Resets in:")} ${chalk.cyan(
-				res.session_start_limit.reset_after + "ms"
-			)}
+					res.session_start_limit.reset_after + "ms"
+				)}
 ${chalk.blue("Per 5 seconds:")} ${chalk.cyan(
-				res.session_start_limit.max_concurrency
-			)}`
-		);
+					res.session_start_limit.max_concurrency
+				)}`
+			);
 
 		this.connect(this);
 

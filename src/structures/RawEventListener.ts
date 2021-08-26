@@ -1,6 +1,7 @@
 import { Bot } from "./index";
 import { GatewayDispatchEvents } from "discord-api-types/v9";
 import { RawEventHandler } from "../typings/index";
+import chalk from "chalk";
 
 export class RawEventListener {
 	private _bot?: Bot;
@@ -19,7 +20,8 @@ export class RawEventListener {
 
 	public handle(data: any) {
 		if (!this._bot) throw new Error("Not loaded yet!");
-		console.log(`Handling event: ${this._event}`);
+		this._bot.debug &&
+			console.info(chalk.cyan(`Handling event: ${this._event}`));
 		return this._handler(this._bot, data);
 	}
 

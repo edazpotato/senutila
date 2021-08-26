@@ -25,11 +25,14 @@ import {
 	GatewayMessageReactionAddDispatchData,
 } from "discord-api-types";
 
+import chalk from "chalk";
+
 /* In an actual app you would do 'import { whatever } from "senutila"', but this is just to make handling dependencies easier on my end */
 
 if (!process.env.TOKEN) throw new Error("Set TOKEN in .env file pls");
 
 const myCoolBot = bot({
+	debug: false,
 	token: process.env.TOKEN,
 	intents:
 		GatewayIntentBits.GuildMessages |
@@ -143,11 +146,16 @@ const myLanguage = myCoolBot.languages.get(myCoolBot.defaultLanguage);
 if (!myLanguage) throw new Error(">>:(");
 
 myCoolBot.addRawEventListeners([
+	rawEventListener(GatewayDispatchEvents.Ready, async (bot) => {
+		console.info(chalk.green(`Ready!!!`));
+	}),
 	rawEventListener(
 		GatewayDispatchEvents.MessageCreate,
 		async (bot, message: GatewayMessageCreateDispatchData) => {
-			console.log(
-				`Message from ${message.author.username}#${message.author.discriminator}: ${message.content}`
+			console.info(
+				chalk.blue(
+					`Message from ${message.author.username}#${message.author.discriminator}: ${message.content}`
+				)
 			);
 			if (message.content.toLowerCase() === "hello there")
 				bot.api
@@ -172,7 +180,13 @@ myCoolBot.addRawEventListeners([
 							],
 						},
 					})
-					.catch(console.log);
+					.catch((e) =>
+						console.warn(
+							chalk.yellow(
+								`Error sending message to ${message.channel_id}: ${e}`
+							)
+						)
+					);
 			if (message.content.includes("69"))
 				bot.api
 					.post(`/channels/${message.channel_id}/messages`, {
@@ -185,7 +199,13 @@ myCoolBot.addRawEventListeners([
 							},
 						},
 					})
-					.catch(console.log);
+					.catch((e) =>
+						console.warn(
+							chalk.yellow(
+								`Error sending message to ${message.channel_id}: ${e}`
+							)
+						)
+					);
 		}
 	),
 	rawEventListener(
@@ -203,7 +223,13 @@ myCoolBot.addRawEventListeners([
 					.delete(
 						`/channels/${event.channel_id}/messages/${event.message_id}/reactions/${encodedEmoji}/${event.user_id}`
 					)
-					.catch((e) => {});
+					.catch((e) => {
+						console.info(
+							chalk.redBright(
+								"I tried to remove the reaction but I didn't have the manage messages permission."
+							)
+						);
+					});
 			}
 		}
 	),
