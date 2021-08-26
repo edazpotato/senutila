@@ -7,7 +7,7 @@ import {
 } from "../../typings/index";
 
 import { BaseComponent } from "../../internals/index";
-import { ComponentRow } from "./index";
+import { Bot } from "../index";
 
 export class Button extends BaseComponent {
 	static ComponentType = 2;
@@ -40,11 +40,16 @@ export class Button extends BaseComponent {
 	 * **DO NOT CALL THIS METHOD**. Unless you're a component row. This is because Discord requires buttons
 	 * to be inside of component row.
 	 */
-	public serialize(row: ComponentRow) {
+	public serialize(bot: Bot) {
+		if (!bot.defaultLanguage)
+			throw new Error("Set the default language mate");
+		const language = bot.languages.get(bot.defaultLanguage);
+		if (!language)
+			throw new Error("Write the dictionary for the language mate");
 		const data: any = {
 			type: Button.ComponentType,
 			style: this._style,
-			label: this._label,
+			label: language.string(this._label),
 		};
 
 		if (this._url) {

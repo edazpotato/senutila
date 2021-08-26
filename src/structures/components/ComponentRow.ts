@@ -1,3 +1,4 @@
+import { Bot } from "../index";
 import { ComponentRowComponent } from "../../typings/index";
 
 type ArrayOfAtLeastOneComponentRowComponents = [
@@ -21,13 +22,13 @@ export class ComponentRow {
 		return this._components;
 	}
 
-	public serialize() {
+	public serialize(bot: Bot) {
 		return {
 			type: ComponentRow.ComponentType,
 			components: this._components
 				.map((component) => {
 					if (!component) return null;
-					return component.serialize(this);
+					return component.serialize(bot);
 				})
 				.filter((serializedComponent) => !!serializedComponent),
 		};

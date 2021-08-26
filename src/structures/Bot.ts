@@ -102,7 +102,7 @@ export class Bot {
 		// console.log("Set api token");
 	}
 
-	private checkThatEverythingHasBeenSetProperly(): boolean | Error {
+	public checkThatEverythingHasBeenSetProperly(): boolean | Error {
 		// Check languages
 		if (this._languages.size < 1) {
 			throw new Error("No languages have been registered yet.");
@@ -486,6 +486,12 @@ ${chalk.blue("Per 5 seconds:")} ${chalk.cyan(
 
 	public get slashCommandCategories() {
 		return this._slashCommandCategories;
+	}
+	public get languages() {
+		return this._languages;
+	}
+	public get defaultLanguage() {
+		return this._defaultLanguage;
 	}
 }
 

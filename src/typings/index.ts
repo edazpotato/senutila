@@ -7,13 +7,16 @@ export type LanguageID = `${string}-${string}`;
 
 export type LanguageDictionaryValue =
 	| string
-	| ((...args: any[]) => string | string[])
-	| (string | ((...args: any[]) => string))[];
+	| string[]
+	| ((...args: any[]) => string | string[]);
 
 export interface RawLanguageDictionary {
 	[key: string]: LanguageDictionaryValue;
 }
-export type LanguageDictionary = Collection<string, LanguageDictionaryValue>;
+export type LanguageDictionary = Collection<
+	LanguageKey,
+	LanguageDictionaryValue
+>;
 
 export type LanguageKey = string | [string, ...any];
 

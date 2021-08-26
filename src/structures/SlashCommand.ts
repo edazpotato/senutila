@@ -1,17 +1,17 @@
 import { BaseStructure, Interaction } from "../internals/index";
+import { InteractionHandler, LanguageKey } from "../typings/index";
 
 import { APIApplicationCommandInteraction } from "discord-api-types/v9";
-import { InteractionHandler } from "../typings/index";
 
 const commandsNameRegExp = /^[\w-]{1,32}$/;
 
 export class SlashCommand extends BaseStructure {
-	private _descriptionKey: string;
+	private _descriptionKey: LanguageKey;
 	private _handler: InteractionHandler;
 
 	constructor(
 		name: string,
-		descriptionKey: string,
+		descriptionKey: LanguageKey,
 		handler: InteractionHandler
 	) {
 		const commandID = name.toLowerCase();
@@ -35,7 +35,7 @@ export class SlashCommand extends BaseStructure {
 		return this._handler(this.bot, interaction);
 	}
 
-	public get descriptionKey(): string {
+	public get descriptionKey(): LanguageKey {
 		return this._descriptionKey;
 	}
 }

@@ -2,12 +2,13 @@ import { Bot, SlashCommand } from "./index";
 
 import { BaseStructure } from "../internals/index";
 import Collection from "@discordjs/collection";
+import { LanguageKey } from "../typings";
 
 export class SlashCommandCategory extends BaseStructure {
 	private _commands: Collection<string, SlashCommand> = new Collection();
-	private _nameKey: string;
+	private _nameKey: LanguageKey;
 
-	constructor(id: string, nameKey: string, commands: SlashCommand[]) {
+	constructor(id: string, nameKey: LanguageKey, commands: SlashCommand[]) {
 		super(id);
 		this._nameKey = nameKey;
 
@@ -29,7 +30,7 @@ export class SlashCommandCategory extends BaseStructure {
 		return this;
 	}
 
-	public get nameKey(): string {
+	public get nameKey(): LanguageKey {
 		return this._nameKey;
 	}
 

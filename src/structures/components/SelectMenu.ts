@@ -6,6 +6,7 @@ import {
 } from "../../typings/index";
 
 import { BaseComponent } from "../../internals/index";
+import { Bot } from "../index";
 
 interface SelectMenuOption {
 	label: LanguageKey;
@@ -67,20 +68,26 @@ export class SelectMenu extends BaseComponent {
 		this._options = args.options;
 	}
 
-	public serialize() {
+	public serialize(bot: Bot) {
+		if (!bot.defaultLanguage)
+			throw new Error("Set the default language mate");
+		const language = bot.languages.get(bot.defaultLanguage);
+		if (!language)
+			throw new Error("Write the dictionary for the language mate");
+
 		return {
 			type: SelectMenu.ComponentType,
 			custom_id: this._id,
-			placeholder: this._placeholder,
+			placeholder: language.string(this._placeholder),
 			min_values: this._minOptions,
 			max_values: this._maxOptions,
 			options: this._options
 				.map((option) => {
 					if (!option) return null;
 					return {
-						label: option.label,
+						label: language.string(option.label),
 						value: option.value,
-						description: option.description,
+						description: language.string(option.description),
 						emoji: option.emoji
 							? {
 									name: option.emoji.name,

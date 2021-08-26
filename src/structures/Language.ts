@@ -2,6 +2,7 @@ import {
 	LanguageDictionary,
 	LanguageDictionaryValue,
 	LanguageID,
+	LanguageKey,
 	RawLanguageDictionary,
 } from "../typings/index";
 
@@ -24,9 +25,10 @@ export class Language extends BaseStructure {
 		if (dictionary instanceof Collection) {
 			this._dictionary = dictionary;
 		} else {
-			this._dictionary = new Collection<string, LanguageDictionaryValue>(
-				Object.entries(dictionary)
-			);
+			this._dictionary = new Collection<
+				LanguageKey,
+				LanguageDictionaryValue
+			>(Object.entries(dictionary));
 		}
 	}
 
@@ -39,6 +41,50 @@ export class Language extends BaseStructure {
 	}
 	public get dictionary(): LanguageDictionary {
 		return this._dictionary;
+	}
+
+	public string(rawKey: LanguageKey, ...rest: any[]): string {
+		if (!this.bot) throw new Error("Bruh can't do that before loaded");
+		if (!this.bot.defaultLanguage)
+			throw new Error("Set the default language mate");
+
+		let key = rawKey;
+		let args = rest;
+		if (Array.isArray(rawKey)) {
+			key = rawKey[0];
+			args = [...rawKey.slice(1), ...rest];
+		}
+
+		let thing = this._dictionary.get(key);
+
+		if (!thing) {
+			if (this._id !== this.bot.defaultLanguage) {
+				const defaultLanguage = this.bot.languages.get(
+					this.bot.defaultLanguage
+				);
+				if (!defaultLanguage)
+					throw new Error(
+						"Make sure you actually have made a dictionary for the default language"
+					);
+				const defaultThing = defaultLanguage.dictionary.get(key);
+				if (!defaultThing)
+					throw new Error(
+						"You must have set all strings in the default language's dictionary."
+					);
+				thing = defaultThing;
+			} else {
+				throw new Error(
+					"You must have set all strings in the default language's dictionary."
+				);
+			}
+		}
+
+		if (typeof thing === "function") thing = thing(...rest);
+
+		if (Array.isArray(thing))
+			thing = thing[Math.floor(Math.random() * thing.length)];
+
+		return thing;
 	}
 }
 
