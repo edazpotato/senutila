@@ -65,7 +65,7 @@ export class Bot {
 	api: DiscordRestAPIClient;
 
 	readonly apiVersion = 9;
-	readonly gatewayEncoding: "etf" | "json" = "json";
+	readonly gatewayEncoding: "etf" | "json" = "etf";
 	readonly gatewayCompression: "zlib-stream" | null = null;
 	private gatewayRoot?: string;
 	private get gatewayAddress() {
