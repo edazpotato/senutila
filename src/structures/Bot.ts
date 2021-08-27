@@ -1,19 +1,29 @@
-import { Category, Command, Language, RawEventListener } from "./index";
 import {
+	Button,
+	ContextMenuCommand,
+	Language,
+	RawEventListener,
+	SlashCommand,
+	SlashCommandCategory,
+} from "./index";
+import {
+	ComponentType,
 	GatewayDispatchEvents,
 	GatewayInteractionCreateDispatchData,
 	InteractionType,
-} from "discord-api-types";
+} from "discord-api-types/v9";
 import {
 	GatewayIdentifyData,
 	GatewaySendOpcodes,
 	LanguageID,
 	OutgoingGatewayDispatchPayload,
 	Presence,
+	Snowflake,
 } from "../typings/index";
 
 import Collection from "@discordjs/collection";
 import { REST as DiscordRestAPIClient } from "@discordjs/rest";
+import { UniqueID } from "nodejs-snowflake";
 import WebSocket from "ws";
 import ZLib from "zlib-sync";
 import chalk from "chalk";
@@ -23,16 +33,25 @@ interface BotOptions {
 	token: string;
 	presence?: Presence;
 	intents: number;
+	debug?: boolean;
+	machineID: number;
 }
 
 export class Bot {
+	readonly debug?: boolean;
+
+	public idGenerator: UniqueID;
+
 	private __top_secret_TOKEN_dont_expose_this_please: string;
 	private _inital_presence?: Presence;
 
 	private _languages: Collection<LanguageID, Language> = new Collection();
 	private _defaultLanguage?: LanguageID;
-	private _categories: Collection<string, Category> = new Collection();
-	private _commands: Collection<string, Command> = new Collection();
+	private _slashCommandCategories: Collection<string, SlashCommandCategory> =
+		new Collection();
+	private _slashCommands: Collection<string, SlashCommand> = new Collection();
+	private _contextMenuCommands: Collection<string, ContextMenuCommand> =
+		new Collection();
 	private _rawEventListeners: Collection<
 		GatewayDispatchEvents,
 		RawEventListener[]
@@ -56,7 +75,7 @@ export class Bot {
 	api: DiscordRestAPIClient;
 
 	readonly apiVersion = 9;
-	readonly gatewayEncoding: "etf" | "json" = "json";
+	readonly gatewayEncoding: "etf" | "json" = "etf";
 	readonly gatewayCompression: "zlib-stream" | null = null;
 	private gatewayRoot?: string;
 	private get gatewayAddress() {
@@ -71,15 +90,22 @@ export class Bot {
 		}`;
 	}
 
+	public buttonMap = new Collection<Snowflake, Button>();
+
 	constructor(options: BotOptions) {
+		this.idGenerator = new UniqueID({
+			machineID: options.machineID,
+			customEpoch: 1420070400000, // Discord's custom epoch
+		});
+		options.debug && (this.debug = options.debug);
 		this.__top_secret_TOKEN_dont_expose_this_please = options.token;
 		this._inital_presence = options.presence;
 		this._intents = options.intents;
 
 		// Category for commands that aren't in any other ones
-		this._categories.set(
+		this._slashCommandCategories.set(
 			"__senutila_default_other",
-			new Category(
+			new SlashCommandCategory(
 				"__senutila_default_other",
 				"__SENUTILA_DEFAULT_CATEGORY_OTHER",
 				[]
@@ -93,7 +119,7 @@ export class Bot {
 		// console.log("Set api token");
 	}
 
-	checkThatEverythingHasBeenSetProperly(): Bot {
+	public checkThatEverythingHasBeenSetProperly(): boolean | Error {
 		// Check languages
 		if (this._languages.size < 1) {
 			throw new Error("No languages have been registered yet.");
@@ -101,11 +127,10 @@ export class Bot {
 		if (!this._defaultLanguage) {
 			throw new Error("You need to set a defualt language.");
 		}
-
-		return this;
+		return true;
 	}
 
-	setDefaultLanguage(language: LanguageID): Bot {
+	public setDefaultLanguage(language: LanguageID): Bot {
 		if (this._languages.has(language)) {
 			this._defaultLanguage = language;
 			return this;
@@ -115,7 +140,7 @@ export class Bot {
 		);
 	}
 
-	registerLanguages(languages: Language[]): Bot {
+	public registerLanguages(languages: Language[]): Bot {
 		// Add languages to Collection
 		for (const language of languages) {
 			if (this._languages.has(language.id))
@@ -128,13 +153,15 @@ export class Bot {
 		return this;
 	}
 
-	addCommands(thingsToRegister: (Category | Command)[]): Bot {
+	public addSlashCommands(
+		thingsToRegister: (SlashCommandCategory | SlashCommand)[]
+	): Bot {
 		this.checkThatEverythingHasBeenSetProperly();
 
 		for (const thing of thingsToRegister) {
-			if (thing instanceof Command) {
+			if (thing instanceof SlashCommand) {
 				// Default category
-				const category = this._categories.get(
+				const category = this._slashCommandCategories.get(
 					"__senutila_default_other"
 				);
 				// Stop people from being stupid
@@ -149,13 +176,13 @@ export class Bot {
 					);
 				thing.load(this);
 
-				// Add the command to the default commands collection
+				// Add the command to the default slash commands collection
 				category.commands.set(thing.id, thing);
 
-				// Add it to the global commands collection
-				this._commands.set(thing.id, thing);
+				// Add it to the slash commands collection
+				this._slashCommands.set(thing.id, thing);
 			} else {
-				if (this._categories.has(thing.id))
+				if (this._slashCommandCategories.has(thing.id))
 					throw new Error(
 						`Multiple categories with the same ID: ${thing.id}.`
 					);
@@ -163,13 +190,24 @@ export class Bot {
 
 				// Add the categories' commands to the global commands collection
 				thing.commands.forEach((command) => {
-					this._commands.set(command.id, command);
+					this._slashCommands.set(command.id, command);
 				});
 
 				// Add the cateogory to the global categories collection
-				this._categories.set(thing.id, thing);
+				this._slashCommandCategories.set(thing.id, thing);
 			}
 		}
+		return this;
+	}
+
+	public addContextMenuCommands(toRegister: ContextMenuCommand[]): Bot {
+		this.checkThatEverythingHasBeenSetProperly();
+
+		for (const thing of toRegister) {
+			thing.load(this);
+			this._contextMenuCommands.set(thing.id, thing);
+		}
+
 		return this;
 	}
 
@@ -198,14 +236,14 @@ export class Bot {
 	) {
 		if (!this._ws) return false;
 		let data: OutgoingGatewayDispatchPayload = { op: opcode };
-		if (payload) data.d = payload;
+		if (payload !== undefined) data.d = payload;
 		let compressed;
 		if (this.gatewayEncoding === "etf") {
 			compressed = erlpack.pack(data);
 		} else {
 			compressed = JSON.stringify(data);
 		}
-		// console.log(comprsessed);
+		// console.log(compressed);
 		return this._ws.send(compressed, callback);
 	}
 
@@ -227,10 +265,10 @@ export class Bot {
 
 	private sendWebSocketHeartbeat(bot: Bot, schedule: boolean = true) {
 		/*
-			Becuase this is sometimes caleld from a setTimeout, 'this'
-			won't always refer to the Bot instance, so it needs to be
-			passed in as a parameter. Also remember to not use 'this'
-			in this method, use 'bot' inststead.
+			Becuase this method is sometimes called from a setTimeout,
+			'this' won't always refer to the Bot instance, so it needs
+			to be passed in as a parameter. Also remember to not use
+			'this' in this method, use 'bot' inststead.
 		*/
 
 		if (bot.lastWebSocketHeartbeatReceivedAcknolegement === false) {
@@ -240,8 +278,9 @@ export class Bot {
 		}
 
 		bot.lastWebSocketHeartbeatReceivedAcknolegement = false;
-		bot.sendWebSocketMessage(GatewaySendOpcodes.Heartbeat);
-		console.log("Sent heartbeat!");
+		// console.log(GatewaySendOpcodes.Heartbeat);
+		bot.sendWebSocketMessage(GatewaySendOpcodes.Heartbeat, null);
+		// console.log("Sent heartbeat!");
 
 		if (schedule) {
 			if (!bot.webSocketHeartbeatInterval) return;
@@ -253,7 +292,7 @@ export class Bot {
 	}
 
 	private sendWebSocketIdentify() {
-		console.info(chalk.blue("Sending identify message..."));
+		this.debug && console.info(chalk.blue("Sending identify message..."));
 		const data: GatewayIdentifyData = {
 			token: this.__top_secret_TOKEN_dont_expose_this_please,
 			intents: this._intents,
@@ -329,7 +368,8 @@ export class Bot {
 		}
 
 		// if (opcode !== 0)
-		console.log(`OP: ${opcode}, Name: ${eventName}`);
+		this.debug &&
+			console.info(chalk.cyan(`OP: ${opcode}, Name: ${eventName}`));
 
 		switch (opcode) {
 			case 0:
@@ -362,8 +402,11 @@ export class Bot {
 			case 10:
 				this.webSocketHeartbeatInterval =
 					dataContent.heartbeat_interval;
+				// console.log(
+				// 	`Heartbeat interval: ${this.webSocketHeartbeatInterval}`
+				// );
 				this.webSocketHeartbeatTimeout = setTimeout(() => {
-					console.log("About to hearbeat!");
+					// console.log("About to hearbeat!");
 					this.sendWebSocketHeartbeat(this);
 				}, dataContent.heartbeat_interval * Math.random());
 				if (!this.resumingWebSocketConnection)
@@ -380,6 +423,9 @@ export class Bot {
 		eventName: GatewayDispatchEvents,
 		data: any
 	) {
+		// if (eventName === GatewayDispatchEvents.Ready && this.debug)
+		// 	console.info(chalk.green("Ready!"));
+
 		const customHandlers = this._rawEventListeners.get(eventName);
 		if (customHandlers) {
 			customHandlers.forEach((handler) => {
@@ -390,9 +436,30 @@ export class Bot {
 		if (eventName === GatewayDispatchEvents.InteractionCreate) {
 			const interaction = data as GatewayInteractionCreateDispatchData;
 			if (interaction.type === InteractionType.ApplicationCommand) {
-				const command = this._commands.get(interaction.data.name);
+				const command = this._slashCommands.get(interaction.data.name);
 				if (command) command.handle(interaction);
 			} else if (interaction.type === InteractionType.MessageComponent) {
+				if (interaction.data) {
+					switch (interaction.data.component_type) {
+						case ComponentType.Button:
+							const button = this.buttonMap.get(
+								interaction.data.custom_id
+							);
+							if (button) {
+								button.handle(this, interaction);
+							} else {
+								console.warn(
+									chalk.red(
+										`Received a message component interaction with no matching ID in internal Map. ID: ${interaction.data.custom_id}`
+									)
+								);
+							}
+
+							break;
+						case ComponentType.SelectMenu:
+							break;
+					}
+				}
 			}
 		}
 	}
@@ -401,7 +468,7 @@ export class Bot {
 		const ws = new WebSocket(bot.gatewayAddress);
 
 		ws.addEventListener("open", () => {
-			console.info(chalk.green("WebSocket opened!"));
+			this.debug && console.info(chalk.green("WebSocket opened!"));
 			if (resume) {
 				bot.resumeWebSocketConnection();
 			}
@@ -442,25 +509,32 @@ export class Bot {
 
 		this.gatewayRoot = res.url;
 
-		console.info(
-			`Session start limits:
+		this.debug &&
+			console.info(
+				`Session start limits:
 ${chalk.blue("Total:")} ${chalk.cyan(res.session_start_limit.total)}
 ${chalk.blue("Remaining:")} ${chalk.cyan(res.session_start_limit.remaining)}
 ${chalk.blue("Resets in:")} ${chalk.cyan(
-				res.session_start_limit.reset_after + "ms"
-			)}
+					res.session_start_limit.reset_after + "ms"
+				)}
 ${chalk.blue("Per 5 seconds:")} ${chalk.cyan(
-				res.session_start_limit.max_concurrency
-			)}`
-		);
+					res.session_start_limit.max_concurrency
+				)}`
+			);
 
 		this.connect(this);
 
 		return this;
 	}
 
-	public get categories() {
-		return this._categories;
+	public get slashCommandCategories() {
+		return this._slashCommandCategories;
+	}
+	public get languages() {
+		return this._languages;
+	}
+	public get defaultLanguage() {
+		return this._defaultLanguage;
 	}
 }
 

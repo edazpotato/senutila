@@ -9,7 +9,7 @@ export class BaseComponent {
 		this._id = Math.floor(Math.random() * 100).toString(); // TODO: Need to do something better than this
 	}
 
-	serialize(): object {
+	serialize(typeForcer?: any): object {
 		return {};
 	}
 }
