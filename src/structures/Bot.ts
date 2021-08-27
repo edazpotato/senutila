@@ -23,6 +23,7 @@ import {
 
 import Collection from "@discordjs/collection";
 import { REST as DiscordRestAPIClient } from "@discordjs/rest";
+import { Interaction } from "../internals/index";
 import { UniqueID } from "nodejs-snowflake";
 import WebSocket from "ws";
 import ZLib from "zlib-sync";
@@ -131,13 +132,13 @@ export class Bot {
 	}
 
 	public setDefaultLanguage(language: LanguageID): Bot {
-		if (this._languages.has(language)) {
-			this._defaultLanguage = language;
-			return this;
-		}
-		throw new Error(
-			"You have to register the language before you can set it as the defualt."
-		);
+		if (!this._languages.has(language))
+			throw new Error(
+				"You have to register the language before you can set it as the defualt."
+			);
+
+		this._defaultLanguage = language;
+		return this;
 	}
 
 	public registerLanguages(languages: Language[]): Bot {
@@ -445,14 +446,24 @@ export class Bot {
 							const button = this.buttonMap.get(
 								interaction.data.custom_id
 							);
+							const interactionObject = new Interaction(
+								this,
+								interaction
+							);
 							if (button) {
-								button.handle(this, interaction);
+								button.handle(this, interactionObject);
 							} else {
-								console.warn(
-									chalk.red(
-										`Received a message component interaction with no matching ID in internal Map. ID: ${interaction.data.custom_id}`
-									)
-								);
+								this.debug &&
+									console.warn(
+										chalk.red(
+											`Received a message component interaction with no matching ID in internal Map. ID: ${interaction.data.custom_id}`
+										)
+									);
+								interactionObject.reply({
+									ephemeral: true,
+									content:
+										"_COMPONENT_INTERACTION_HANDLER_NOT_FOUND",
+								});
 							}
 
 							break;

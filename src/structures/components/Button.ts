@@ -76,9 +76,7 @@ export class Button extends BaseComponent {
 		return data;
 	}
 
-	public handle(bot: Bot, rawInteraction: APIMessageComponentInteraction) {
-		const interaction = new Interaction(bot, rawInteraction);
-
+	public handle(bot: Bot, interaction: Interaction) {
 		return this._handler(bot, interaction);
 	}
 
