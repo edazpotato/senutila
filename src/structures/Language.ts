@@ -53,6 +53,7 @@ export class Language extends BaseStructure {
 		if (Array.isArray(rawKey)) {
 			key = rawKey[0];
 			args = [...rawKey.slice(1), ...rest];
+			// console.log(args);
 		}
 
 		let thing = this._dictionary.get(key);
@@ -79,7 +80,7 @@ export class Language extends BaseStructure {
 			}
 		}
 
-		if (typeof thing === "function") thing = thing(...rest);
+		if (typeof thing === "function") thing = thing(...args);
 
 		if (Array.isArray(thing))
 			thing = thing[Math.floor(Math.random() * thing.length)];

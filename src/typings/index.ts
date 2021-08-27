@@ -33,10 +33,10 @@ export type InteractionHandler = (
 	interaction: Interaction
 ) => Promise<any>;
 
-export type TopLevelMessageComponent = Button | ComponentRow;
+export type TopLevelMessageComponent = ComponentRow;
 export type ComponentRowComponent = Button | SelectMenu;
 
-export type Snowflake = number;
+export type Snowflake = string;
 
 export type RawEventHandler = (bot: Bot, event: any) => Promise<any>;
 
@@ -112,4 +112,16 @@ export interface GatewayIdentifyData {
 	shard?: [shard_id: number, shard_count: number];
 	presence?: Presence;
 	intents: number;
+}
+
+export enum InteractionCallbackType {
+	Pong = 1,
+	Message = 4,
+	DeferrMessage = 5,
+	Deferr = 6,
+	UpdatedDeferredMessage = 7,
+}
+
+export enum InteractionCallbackDataFlags {
+	Ephemeral = 1 << 6,
 }

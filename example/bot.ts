@@ -25,6 +25,7 @@ import {
 	GatewayMessageReactionAddDispatchData,
 } from "discord-api-types";
 
+import { Interaction } from "../lib/internals/index";
 import chalk from "chalk";
 
 /* In an actual app you would do 'import { whatever } from "senutila"', but this is just to make handling dependencies easier on my end */
@@ -32,7 +33,8 @@ import chalk from "chalk";
 if (!process.env.TOKEN) throw new Error("Set TOKEN in .env file pls");
 
 const myCoolBot = bot({
-	debug: false,
+	debug: true,
+	machineID: 0,
 	token: process.env.TOKEN,
 	intents:
 		GatewayIntentBits.GuildMessages |
@@ -58,7 +60,11 @@ myCoolBot
 			COMMAND_1_BUTTON_1_TEXT: "Click me!",
 			COMMAND_1_BUTTON_1_INTERACTION_RESPONSE_TEXT: "You did it!",
 			RAW_EVENT_1_RESPONSE_TEXT: "General Kenobi...",
-			RAW_EVENT_1_BUTTON_TEXT: "Check out Senutila!",
+			RAW_EVENT_1_BUTTON_1_TEXT: "Check out Senutila!",
+			RAW_EVENT_1_BUTTON_2_TEXT: "Click me!",
+			RAW_EVENT_1_BUTTON_2_TEXT_INTERACTION_RESPONSE_TEXT: (
+				interaction: Interaction
+			) => `This button's ID is ${interaction.customID}`,
 			RAW_EVENT_2_RESPONSE_TEXT: "(nice)",
 		}),
 	])
@@ -85,7 +91,7 @@ myCoolBot
 												"COMMAND_1_SELECT_1_OPTION_1_DESCRIPTION",
 											value: "1",
 											emoji: {
-												id: 12234554564645,
+												id: "12234554564645",
 												name: "lmao",
 											},
 										},
@@ -100,18 +106,20 @@ myCoolBot
 								async (bot, interaction) => {}
 							),
 						]),
-						button(
-							{
-								label: "COMMAND_1_BUTTON_1_TEXT",
-								style: ButtonStyles.Primary,
-							},
-							async (bot, interaction) =>
-								interaction.reply({
-									content:
-										"COMMAND_1_BUTTON_1_INTERACTION_RESPONSE_TEXT",
-									ephemeral: true,
-								})
-						),
+						componentRow([
+							button(
+								{
+									label: "COMMAND_1_BUTTON_1_TEXT",
+									style: ButtonStyles.Primary,
+								},
+								async (bot, interaction) =>
+									interaction.reply({
+										content:
+											"COMMAND_1_BUTTON_1_INTERACTION_RESPONSE_TEXT",
+										ephemeral: true,
+									})
+							),
+						]),
 					],
 				})
 		),
@@ -157,7 +165,8 @@ myCoolBot.addRawEventListeners([
 					`Message from ${message.author.username}#${message.author.discriminator}: ${message.content}`
 				)
 			);
-			if (message.content.toLowerCase() === "hello there")
+			if (message.content.toLowerCase() === "hello there") {
+				console.log(message.author.public_flags);
 				bot.api
 					.post(`/channels/${message.channel_id}/messages`, {
 						body: {
@@ -172,10 +181,24 @@ myCoolBot.addRawEventListeners([
 								// Buttons also need to be inside of an ActionRow.
 								componentRow([
 									button({
-										label: "RAW_EVENT_1_BUTTON_TEXT",
+										label: "RAW_EVENT_1_BUTTON_1_TEXT",
 										style: ButtonStyles.Link,
 										url: "https://senutila.edaz.codes/",
 									}),
+									button(
+										{
+											label: "RAW_EVENT_1_BUTTON_2_TEXT",
+											style: ButtonStyles.Success,
+										},
+										async (bot, interaction) =>
+											interaction.reply({
+												content: [
+													"RAW_EVENT_1_BUTTON_2_TEXT_INTERACTION_RESPONSE_TEXT",
+													interaction,
+												],
+												ephemeral: true,
+											})
+									),
 								]).serialize(myCoolBot),
 							],
 						},
@@ -187,6 +210,7 @@ myCoolBot.addRawEventListeners([
 							)
 						)
 					);
+			}
 			if (message.content.includes("69"))
 				bot.api
 					.post(`/channels/${message.channel_id}/messages`, {

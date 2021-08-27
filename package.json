@@ -1,6 +1,6 @@
 {
 	"name": "senutila",
-	"version": "0.2.2",
+	"version": "0.2.3",
 	"description": "A Discord bot framework focused on providing a great developer experience. Also better than discord.js.",
 	"main": "lib/index.js",
 	"files": [
@@ -37,9 +37,10 @@
 		"bufferutil": "^4.0.3",
 		"centra": "^2.5.0",
 		"chalk": "^4.1.1",
-		"discord-api-types": "github:discordjs/discord-api-types",
+		"discord-api-types": "^0.23.0-next.f2e2286.1630026119",
 		"dotenv": "^10.0.0",
 		"erlpack": "^0.1.3",
+		"nodejs-snowflake": "^1.6.2",
 		"tweetnacl": "^1.0.3",
 		"utf-8-validate": "^5.0.5",
 		"ws": "^8.0.0",

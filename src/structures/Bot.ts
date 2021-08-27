@@ -1,4 +1,5 @@
 import {
+	Button,
 	ContextMenuCommand,
 	Language,
 	RawEventListener,
@@ -6,6 +7,7 @@ import {
 	SlashCommandCategory,
 } from "./index";
 import {
+	ComponentType,
 	GatewayDispatchEvents,
 	GatewayInteractionCreateDispatchData,
 	InteractionType,
@@ -16,10 +18,12 @@ import {
 	LanguageID,
 	OutgoingGatewayDispatchPayload,
 	Presence,
+	Snowflake,
 } from "../typings/index";
 
 import Collection from "@discordjs/collection";
 import { REST as DiscordRestAPIClient } from "@discordjs/rest";
+import { UniqueID } from "nodejs-snowflake";
 import WebSocket from "ws";
 import ZLib from "zlib-sync";
 import chalk from "chalk";
@@ -30,10 +34,13 @@ interface BotOptions {
 	presence?: Presence;
 	intents: number;
 	debug?: boolean;
+	machineID: number;
 }
 
 export class Bot {
 	readonly debug?: boolean;
+
+	public idGenerator: UniqueID;
 
 	private __top_secret_TOKEN_dont_expose_this_please: string;
 	private _inital_presence?: Presence;
@@ -83,7 +90,13 @@ export class Bot {
 		}`;
 	}
 
+	public buttonMap = new Collection<Snowflake, Button>();
+
 	constructor(options: BotOptions) {
+		this.idGenerator = new UniqueID({
+			machineID: options.machineID,
+			customEpoch: 1420070400000, // Discord's custom epoch
+		});
 		options.debug && (this.debug = options.debug);
 		this.__top_secret_TOKEN_dont_expose_this_please = options.token;
 		this._inital_presence = options.presence;
@@ -410,8 +423,8 @@ export class Bot {
 		eventName: GatewayDispatchEvents,
 		data: any
 	) {
-		if (eventName === GatewayDispatchEvents.Ready && this.debug)
-			console.info(chalk.green("Ready!"));
+		// if (eventName === GatewayDispatchEvents.Ready && this.debug)
+		// 	console.info(chalk.green("Ready!"));
 
 		const customHandlers = this._rawEventListeners.get(eventName);
 		if (customHandlers) {
@@ -426,6 +439,27 @@ export class Bot {
 				const command = this._slashCommands.get(interaction.data.name);
 				if (command) command.handle(interaction);
 			} else if (interaction.type === InteractionType.MessageComponent) {
+				if (interaction.data) {
+					switch (interaction.data.component_type) {
+						case ComponentType.Button:
+							const button = this.buttonMap.get(
+								interaction.data.custom_id
+							);
+							if (button) {
+								button.handle(this, interaction);
+							} else {
+								console.warn(
+									chalk.red(
+										`Received a message component interaction with no matching ID in internal Map. ID: ${interaction.data.custom_id}`
+									)
+								);
+							}
+
+							break;
+						case ComponentType.SelectMenu:
+							break;
+					}
+				}
 			}
 		}
 	}
