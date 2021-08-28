@@ -9,7 +9,11 @@ import {
 import {
 	ComponentType,
 	GatewayDispatchEvents,
+	GatewayDispatchPayload,
+	GatewayHelloData,
 	GatewayInteractionCreateDispatchData,
+	GatewayReadyDispatchData,
+	GatewayReceivePayload,
 	InteractionType,
 } from "discord-api-types/v9";
 import {
@@ -67,6 +71,7 @@ export class Bot {
 	private webSocketSequenceNumber = -1;
 	private webSocketSessionID?: string;
 	private resumingWebSocketConnection = false;
+	private webSocketReconnectTimeout?: NodeJS.Timeout;
 
 	private inflate = new ZLib.Inflate({
 		chunkSize: 65535,
@@ -223,11 +228,15 @@ export class Bot {
 		return this;
 	}
 
-	private terminateWebSocketConnection() {
+	private terminateWebSocketConnection(code?: number) {
 		if (!this._ws) return;
 		if (this.webSocketHeartbeatTimeout)
 			clearTimeout(this.webSocketHeartbeatTimeout);
-		this._ws.terminate();
+		if (code) {
+			this._ws.close(code);
+		} else {
+			this._ws.terminate();
+		}
 	}
 
 	private sendWebSocketMessage(
@@ -248,20 +257,24 @@ export class Bot {
 		return this._ws.send(compressed, callback);
 	}
 
-	private resumeWebSocketConnection() {
+	private resumeWebSocketConnection(): boolean {
+		if (this.resumingWebSocketConnection) return false;
+		if (!this.webSocketSessionID) {
+			console.warn(
+				chalk.red("Tried to resume but there is no session ID.")
+			);
+			return false;
+		}
+
 		this.resumingWebSocketConnection = true;
 		console.info(chalk.blue("Resuming connection..."));
-		this.sendWebSocketMessage(
-			GatewaySendOpcodes.Resume,
-			{
-				token: this.__top_secret_TOKEN_dont_expose_this_please,
-				session_id: this.webSocketSessionID,
-				seq: this.webSocketSequenceNumber,
-			},
-			() => {
-				this.resumingWebSocketConnection = false;
-			}
-		);
+
+		this.sendWebSocketMessage(GatewaySendOpcodes.Resume, {
+			token: this.__top_secret_TOKEN_dont_expose_this_please,
+			session_id: this.webSocketSessionID,
+			seq: this.webSocketSequenceNumber,
+		});
+		return true;
 	}
 
 	private sendWebSocketHeartbeat(bot: Bot, schedule: boolean = true) {
@@ -273,7 +286,8 @@ export class Bot {
 		*/
 
 		if (bot.lastWebSocketHeartbeatReceivedAcknolegement === false) {
-			bot.terminateWebSocketConnection();
+			bot.terminateWebSocketConnection(1012);
+			this.resumingWebSocketConnection = true;
 			bot.resumeWebSocketConnection();
 			return;
 		}
@@ -348,34 +362,41 @@ export class Bot {
 
 		// console.log(data);
 
-		const messageData = data as {
-			op: number;
-			d?: any;
-			s?: number;
-			t?: string;
-		};
+		const messageData = data as GatewayReceivePayload;
 
 		const opcode = messageData.op;
 		const dataContent = messageData.d;
-		const sequence = data.s;
-		const eventName = data.t;
+		const sequence = messageData.s;
 
 		if (sequence) {
-			if (
-				this.webSocketSequenceNumber === undefined ||
-				sequence > this.webSocketSequenceNumber
-			)
-				this.webSocketSequenceNumber = sequence;
+			this.webSocketSequenceNumber = sequence;
 		}
 
 		// if (opcode !== 0)
 		this.debug &&
-			console.info(chalk.cyan(`OP: ${opcode}, Name: ${eventName}`));
+			console.info(
+				chalk.cyan(`Received gateway payload with opcode: ${opcode}`)
+			);
 
 		switch (opcode) {
 			case 0:
-				if (eventName)
+				const eventName = (messageData as GatewayDispatchPayload).t;
+
+				if (eventName) {
+					if (eventName === GatewayDispatchEvents.Ready) {
+						const readyData =
+							dataContent as GatewayReadyDispatchData;
+
+						this.webSocketSessionID = readyData.session_id;
+
+						if (this.resumingWebSocketConnection) {
+							this.resumingWebSocketConnection = false;
+							this.webSocketReconnectTimeout &&
+								clearTimeout(this.webSocketReconnectTimeout);
+						}
+					}
 					this.handleWebSocketEventDispatch(eventName, dataContent);
+				}
 				break;
 
 			case 1:
@@ -383,35 +404,54 @@ export class Bot {
 				break;
 
 			case 7:
+				this.terminateWebSocketConnection(1012);
+				this.connect(this, !!this.webSocketSessionID);
 				break;
 
 			case 9:
-				if (dataContent === true) {
+				if (dataContent === true && !this.resumingWebSocketConnection) {
+					this.debug &&
+						console.info(
+							chalk.yellow(
+								`Resuming conenction to invalid session...`
+							)
+						);
+					this.resumingWebSocketConnection = true;
 					this.resumeWebSocketConnection();
 				} else {
-					console.info(
-						chalk.yellow(
-							"Restarting bot in 6 seconds due to invalid session..."
-						)
-					);
-					setTimeout(() => {
+					const time = Math.random() * 5 * 1000;
+					this.debug &&
+						console.info(
+							chalk.yellow(
+								`Restarting bot in ${
+									time / 1000
+								} seconds due to invalid session...`
+							)
+						);
+					this.webSocketReconnectTimeout = setTimeout(() => {
 						this.connect(this, false);
-					}, 6 * 1000);
+					}, time);
 				}
 				break;
 
 			case 10:
-				this.webSocketHeartbeatInterval =
-					dataContent.heartbeat_interval;
+				const helloData = dataContent as GatewayHelloData;
+				this.webSocketHeartbeatInterval = helloData.heartbeat_interval;
+
 				// console.log(
 				// 	`Heartbeat interval: ${this.webSocketHeartbeatInterval}`
 				// );
 				this.webSocketHeartbeatTimeout = setTimeout(() => {
 					// console.log("About to hearbeat!");
 					this.sendWebSocketHeartbeat(this);
-				}, dataContent.heartbeat_interval * Math.random());
-				if (!this.resumingWebSocketConnection)
+				}, helloData.heartbeat_interval * Math.random());
+
+				if (this.resumingWebSocketConnection) {
+					if (!this.resumeWebSocketConnection())
+						this.sendWebSocketIdentify();
+				} else {
 					this.sendWebSocketIdentify();
+				}
 				break;
 
 			case 11:
@@ -434,44 +474,55 @@ export class Bot {
 			});
 		}
 
-		if (eventName === GatewayDispatchEvents.InteractionCreate) {
-			const interaction = data as GatewayInteractionCreateDispatchData;
-			if (interaction.type === InteractionType.ApplicationCommand) {
-				const command = this._slashCommands.get(interaction.data.name);
-				if (command) command.handle(interaction);
-			} else if (interaction.type === InteractionType.MessageComponent) {
-				if (interaction.data) {
-					switch (interaction.data.component_type) {
-						case ComponentType.Button:
-							const button = this.buttonMap.get(
-								interaction.data.custom_id
-							);
-							const interactionObject = new Interaction(
-								this,
-								interaction
-							);
-							if (button) {
-								button.handle(this, interactionObject);
-							} else {
-								this.debug &&
-									console.warn(
-										chalk.red(
-											`Received a message component interaction with no matching ID in internal Map. ID: ${interaction.data.custom_id}`
-										)
-									);
-								interactionObject.reply({
-									ephemeral: true,
-									content:
-										"_COMPONENT_INTERACTION_HANDLER_NOT_FOUND",
-								});
-							}
+		switch (eventName) {
+			case GatewayDispatchEvents.Resumed:
+				this.resumingWebSocketConnection = false;
+				break;
 
-							break;
-						case ComponentType.SelectMenu:
-							break;
+			case GatewayDispatchEvents.InteractionCreate:
+				const interaction =
+					data as GatewayInteractionCreateDispatchData;
+				if (interaction.type === InteractionType.ApplicationCommand) {
+					const command = this._slashCommands.get(
+						interaction.data.name
+					);
+					if (command) command.handle(interaction);
+				} else if (
+					interaction.type === InteractionType.MessageComponent
+				) {
+					if (interaction.data) {
+						switch (interaction.data.component_type) {
+							case ComponentType.Button:
+								const button = this.buttonMap.get(
+									interaction.data.custom_id
+								);
+								const interactionObject = new Interaction(
+									this,
+									interaction
+								);
+								if (button) {
+									button.handle(this, interactionObject);
+								} else {
+									this.debug &&
+										console.warn(
+											chalk.red(
+												`Received a message component interaction with no matching ID in internal Map. ID: ${interaction.data.custom_id}`
+											)
+										);
+									interactionObject.reply({
+										ephemeral: true,
+										content:
+											"_COMPONENT_INTERACTION_HANDLER_NOT_FOUND",
+									});
+								}
+
+								break;
+							case ComponentType.SelectMenu:
+								break;
+						}
 					}
 				}
-			}
+				break;
 		}
 	}
 
@@ -481,21 +532,26 @@ export class Bot {
 		ws.addEventListener("open", () => {
 			this.debug && console.info(chalk.green("WebSocket opened!"));
 			if (resume) {
+				bot.resumingWebSocketConnection = true;
 				bot.resumeWebSocketConnection();
 			}
 		});
 		ws.addEventListener("close", (e) => {
+			ws.terminate();
 			console.info(
 				chalk.red(
-					"WebSocket closed. Will try and reopen in 6 seconds..."
+					"WebSocket closed. Will try and reopen in 5 seconds..."
 				),
 				e.reason,
 				e.code
 			);
-			setTimeout(() => bot.connect(bot, true), 6 * 1000);
+
+			bot.webSocketReconnectTimeout = setTimeout(() => {
+				bot.connect(bot, true);
+			}, 5 * 1000);
 		});
 		ws.addEventListener("error", (event) => {
-			console.warn("WebSocket error:", event.error);
+			this.debug && console.warn("WebSocket error:", event.error);
 		});
 		ws.addEventListener("message", (event) => {
 			// console.log(event.data);
