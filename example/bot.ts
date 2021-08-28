@@ -44,7 +44,7 @@ const myCoolBot = bot({
 		afk: false,
 		activities: [
 			{
-				name: "the game of life",
+				name: "The game of life.",
 				type: ActivityTypes.Game,
 			},
 		],
@@ -53,11 +53,10 @@ const myCoolBot = bot({
 
 myCoolBot
 	.registerLanguages([
-		language("en-GB", "Propper english", {
+		language("en-GB", "Proper English", {
 			// This is temporary until I implement a better button ID system
 			_COMPONENT_INTERACTION_HANDLER_NOT_FOUND:
 				"You used a message component that doesn't exist (on my end). I've probably re-started since that component was added. Please try sending the command that created that component again.",
-
 			COMMAND_1_DESCRIPTION: "First command",
 			COMMAND_2_DESCRIPTION: ["Second command", "Command 2"],
 			CATEGORY_1_NAME: () => `Category 1`,
