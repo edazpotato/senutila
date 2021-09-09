@@ -9,7 +9,7 @@ specifiers:
   bufferutil: ^4.0.3
   centra: ^2.5.0
   chalk: ^4.1.1
-  discord-api-types: ^0.23.0-next.f2e2286.1630026119
+  discord-api-types: ^0.24.0-next.43cc755.1631062715
   dotenv: ^10.0.0
   erlpack: ^0.1.3
   nodejs-snowflake: ^1.6.2
@@ -27,7 +27,7 @@ dependencies:
   bufferutil: 4.0.3
   centra: 2.5.0
   chalk: 4.1.1
-  discord-api-types: 0.23.0-next.f2e2286.1630026119
+  discord-api-types: 0.24.0-next.6f6e6da.1631149355
   dotenv: 10.0.0
   erlpack: 0.1.3
   nodejs-snowflake: 1.6.2
@@ -260,8 +260,8 @@ packages:
     deprecated: No longer supported. Install the latest release (0.20.2)
     dev: false
 
-  /discord-api-types/0.23.0-next.f2e2286.1630026119:
-    resolution: {integrity: sha512-UyMQONNyCnaZaoeN6LsWY04jeU2/TRf/1GXZsrB+mrZjkh8ItpwnBPJMFVT0QILWa34pokHIVY5HtzkcwJwp2Q==}
+  /discord-api-types/0.24.0-next.6f6e6da.1631149355:
+    resolution: {integrity: sha512-gc3lhuHGTbsKkRBnI0P0fFViVZ+sfop8PuNqHrVZM3Uv7vdd+BDa5StsT6fCfaBP+M+m9VyypPUsHZNhJTod5A==}
     engines: {node: '>=12'}
     dev: false
 
