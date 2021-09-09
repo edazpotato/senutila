@@ -37,7 +37,7 @@
 		"bufferutil": "^4.0.3",
 		"centra": "^2.5.0",
 		"chalk": "^4.1.1",
-		"discord-api-types": "^0.23.0-next.f2e2286.1630026119",
+		"discord-api-types": "^0.24.0-next.43cc755.1631062715",
 		"dotenv": "^10.0.0",
 		"erlpack": "^0.1.3",
 		"nodejs-snowflake": "^1.6.2",
