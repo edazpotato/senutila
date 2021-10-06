@@ -1,3 +1,10 @@
+# Senutila is now archived.
+Use [DetritusJSs](https://github.com/detritusjs/client) instead. It does everthing I was trying to do with this better than I could have done it.
+
+
+
+
+
 <div align="center">
   <img src="https://raw.githubusercontent.com/edazpotato/senutila/main/images/logo.png" width="256" height="256" /> 
   <h1>Senutila</h1>
